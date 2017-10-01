@@ -1,10 +1,8 @@
 #pragma once
 #include <string>
 
-#define PROTOCOL std::string("tcp")
 #define SLEEP 100
-#define MAX_MSGS 10
-#define BLOCKING 1
+#define MAX_MSGS 10 // maximum images to wait on the server
 
 struct AddressedMessage
 {

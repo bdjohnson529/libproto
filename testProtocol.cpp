@@ -6,8 +6,7 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
-#define ADDRESS std::string("127.0.0.1")
-#define PORT 20000
+#define ADDRESS std::string("tcp://127.0.0.1:20000")
 
 int main(int argc, char *argv[])
 {
@@ -20,13 +19,13 @@ int main(int argc, char *argv[])
 		image_path = argv[1];
 	}
 
-	// create server
-	std::cout << "Starting Server on " << ADDRESS + ":" + std::to_string(PORT) << std::endl;
-    Server server(ADDRESS, PORT);
-
 	// create client
-	std::cout << "Starting Client on " << ADDRESS + ":" + std::to_string(PORT) << std::endl;
-	Client client("client", ADDRESS, PORT);
+	std::cout << "Starting Client on " << ADDRESS << std::endl;
+	Client client("client", ADDRESS);
+
+	// create server
+	std::cout << "Starting Server on " << ADDRESS << std::endl;
+    Server server(ADDRESS);
 
 	// create an image packet
     cv::Mat iimage = cv::imread(image_path);
@@ -37,14 +36,20 @@ int main(int argc, char *argv[])
     ImagePacket ipacket(a, b, c, d, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
 	Message wmsg(MessageType::IMAGE, ipacket.GetPacket());
 
-	// send the client packet
+	// IMPORTANT : the server will miss the first message from a client
 	client.Send(wmsg.Get());
+	client.Send(wmsg.Get());
+	s_sleep(1000);
 
 	// receive on the server
-	AddressedMessage amsg = server.Recv();
+	std::vector<AddressedMessage> msgs;
+	do
+	{
+		msgs = server.Recv();
+	} while(msgs.front().message.size() == 0);
 
 	// create the message object
-	Message rmsg(amsg.message);
+	Message rmsg(msgs.front().message);
 
 	// decode the packet
 	assert(rmsg.Header().type == MessageType::IMAGE);

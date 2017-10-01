@@ -1,7 +1,5 @@
 #pragma once
-#include <mutex>
-#include <deque>
-#include <thread>
+#include <vector>
 #include <zhelpers.hpp>
 #include "Define.h"
 
@@ -10,19 +8,9 @@ class Server
 {
 public:
 	Server(std::string address);
-	Server(std::string ip, short port);
-	~Server();
-
-	AddressedMessage Recv(); // grabs most recent message, blocks otherwise
+	std::vector<AddressedMessage> Recv(); // waits for at least one message and returns
 
 private:
-	void do_recv();
-
-	zmq::context_t *context;
-	zmq::socket_t *socket;
-
-	volatile bool running;
-	std::mutex lock;
-	std::thread thread;
-	std::deque<AddressedMessage> msgs; // messages with sender info
+	zmq::context_t context;
+	zmq::socket_t socket;
 };
