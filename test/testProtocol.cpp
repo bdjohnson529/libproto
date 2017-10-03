@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 	Coord c(4,5);
 	Coord d(6,7);
     ImagePacket ipacket(a, b, c, d, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
-	Message wmsg(MessageType::IMAGE, ipacket.GetPacket(), COMPRESSION);
+	Message wmsg(MessageType::IMAGE, ipacket.GetPacket(), PROTO_COMPRESSION);
 
 	// IMPORTANT : the server will miss the first message from a client
 	client.Send(wmsg.Get());
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 	} while(msgs.front().message.size() == 0);
 
 	// create the message object
-	Message rmsg(msgs.front().message, COMPRESSION);
+	Message rmsg(msgs.front().message, PROTO_COMPRESSION);
 
 	// decode the packet
 	assert(rmsg.Header().type == MessageType::IMAGE);

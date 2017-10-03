@@ -34,8 +34,8 @@ private:
 
 public:
 	Message() {}
-	Message(MessageType type, std::string data, bool compressed = COMPRESSION);
-	Message(std::string raw, bool compressed = COMPRESSION);
+	Message(MessageType type, std::string data, bool compressed = PROTO_COMPRESSION);
+	Message(std::string raw, bool compressed = PROTO_COMPRESSION);
 
 	void operator=(Message &rhs);
 

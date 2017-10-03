@@ -2,7 +2,7 @@
 
 Server::Server(std::string address) : context(1), socket(context, ZMQ_SUB)
 {
-	int hwm = MAX_MSGS;
+	int hwm = PROTO_MAX_MSGS;
     socket.setsockopt(ZMQ_SNDHWM, &hwm, sizeof(hwm)); // maximum number of oustanding messages
 	int linger = 0;
 	socket.setsockopt(ZMQ_LINGER, &linger, sizeof(linger)); // close socket immediately
@@ -23,7 +23,7 @@ std::vector<AddressedMessage> Server::Recv()
 			return msgs;
 		else if(sender == ""  && msgs.size() == 0)
 		{
-			s_sleep(SLEEP);
+			s_sleep(PROTO_SLEEP);
 			continue;
 		}
 
@@ -33,7 +33,7 @@ std::vector<AddressedMessage> Server::Recv()
 		// break if empty
 		if(message == "")
 		{
-			s_sleep(SLEEP);
+			s_sleep(PROTO_SLEEP);
 			continue;
 		}
 

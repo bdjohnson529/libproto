@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 
-#define SLEEP 100
-#define MAX_MSGS 10 // maximum images to wait on the server
-#define COMPRESSION true
+#define PROTO_SLEEP 100
+#define PROTO_MAX_MSGS 10 // maximum images to wait on the server
+#define PROTO_COMPRESSION true
 
 struct AddressedMessage
 {
