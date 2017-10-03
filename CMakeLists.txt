@@ -15,8 +15,8 @@ find_package(Boost 1.54 COMPONENTS iostreams serialization)
 include_directories(
     /user/include
     /usr/local/include/
-	./zmq/include
-    ${PROJECT_SOURCE_DIR}
+	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/include/zmq
     ${OpenCV_INCLUDE_DIRS}
 )
 
@@ -25,10 +25,10 @@ link_directories(
 	/usr/local/lib
 )
 
-file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/*.cpp")
-file(GLOB HEADER "${PROJECT_SOURCE_DIR}/*.h*")
+file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
+file(GLOB HEADER "${PROJECT_SOURCE_DIR}/include/*.h*")
 
 add_library(Proto STATIC ${SOURCES} ${HEADERS})
 
-add_executable(testProtocol testProtocol.cpp)
+add_executable(testProtocol ${PROJECT_SOURCE_DIR}/test/testProtocol.cpp)
 target_link_libraries(testProtocol Proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
