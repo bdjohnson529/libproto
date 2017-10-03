@@ -4,6 +4,7 @@
 #include <sstream>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
+#include "Compress.hpp"
 
 enum MessageType
 {
@@ -33,8 +34,8 @@ private:
 
 public:
 	Message() {}
-	Message(MessageType type, std::string data);
-	Message(std::string raw);
+	Message(MessageType type, std::string data, bool compressed = COMPRESSION);
+	Message(std::string raw, bool compressed = COMPRESSION);
 
 	void operator=(Message &rhs);
 

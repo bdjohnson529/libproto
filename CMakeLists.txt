@@ -31,4 +31,4 @@ file(GLOB HEADER "${PROJECT_SOURCE_DIR}/*.h*")
 add_library(Proto STATIC ${SOURCES} ${HEADERS})
 
 add_executable(testProtocol testProtocol.cpp)
-target_link_libraries(testProtocol Proto ${OpenCV_LIBS} zmq boost_system boost_iostreams boost_serialization pthread)
+target_link_libraries(testProtocol Proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)

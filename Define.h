@@ -3,6 +3,7 @@
 
 #define SLEEP 100
 #define MAX_MSGS 10 // maximum images to wait on the server
+#define COMPRESSION true
 
 struct AddressedMessage
 {
