@@ -6,43 +6,46 @@
 #include <boost/archive/text_iarchive.hpp>
 #include "Compress.hpp"
 
-enum MessageType
+namespace proto
 {
-	IMAGE
-};
-
-// provides an abstract message class to serialize different message types
-class Message
-{
-	struct MessageHeader
+	enum MessageType
 	{
-		int type;
+		IMAGE
 	};
 
-private:
-	MessageHeader header;
-	std::string msg;
-	std::string body;
-
-	friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version)
+	// provides an abstract message class to serialize different message types
+	class Message
 	{
-		ar & header.type;
-		ar & body;
-	}
+		struct MessageHeader
+		{
+			int type;
+		};
 
-public:
-	Message() {}
-	Message(MessageType type, std::string data, bool compressed = PROTO_COMPRESSION);
-	Message(std::string raw, bool compressed = PROTO_COMPRESSION);
+	private:
+		MessageHeader header;
+		std::string msg;
+		std::string body;
 
-	void operator=(Message &rhs);
+		friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive & ar, const unsigned int version)
+		{
+			ar & header.type;
+			ar & body;
+		}
 
-	std::string Get(){return msg;}
-	MessageHeader Header(){return header;}
-	std::string Body(){return body;}
-	size_t Size(){return msg.size();}
-	size_t HeaderSize(){return sizeof(MessageHeader);}
-	size_t BodySize(){return body.size();}
+	public:
+		Message() {}
+		Message(MessageType type, std::string data, bool compressed = PROTO_COMPRESSION);
+		Message(std::string raw, bool compressed = PROTO_COMPRESSION);
+
+		void operator=(Message &rhs);
+
+		std::string Get(){return msg;}
+		MessageHeader Header(){return header;}
+		std::string Body(){return body;}
+		size_t Size(){return msg.size();}
+		size_t HeaderSize(){return sizeof(MessageHeader);}
+		size_t BodySize(){return body.size();}
+	};
 };

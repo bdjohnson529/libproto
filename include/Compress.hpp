@@ -7,5 +7,8 @@
 #include <zlib.h>
 #include "Define.h"
 
-std::string Compress(std::string str);
-std::string Decompress(std::string str);
+namespace proto
+{
+	std::string Compress(std::string str);
+	std::string Decompress(std::string str);
+};

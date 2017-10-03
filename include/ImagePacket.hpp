@@ -5,64 +5,67 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
-struct Coord
+namespace proto
 {
-	float lat;
-	float lon;
-	Coord()
+	struct Coord
 	{
+		float lat;
+		float lon;
+		Coord()
+		{
 
-	}
-	Coord(float lat, float lon)
+		}
+		Coord(float lat, float lon)
+		{
+			this->lat = lat;
+			this->lon = lon;
+		}
+	};
+
+	// provides an image message class to serialize images
+	class ImagePacket
 	{
-		this->lat = lat;
-		this->lon = lon;
-	}
-};
+	public:
+		// tie points of image
+		Coord topleft;
+		Coord topright;
+		Coord botleft;
+		Coord botright;
 
-// provides an image message class to serialize images
-class ImagePacket
-{
-public:
-	// tie points of image
-	Coord topleft;
-	Coord topright;
-	Coord botleft;
-	Coord botright;
+	    int width;		 // image width
+		int height;		 // image height
+		int bpp;		 // bits per pixel
+		int size;		 // data size
+		std::string data;// image data buffer
 
-    int width;		 // image width
-	int height;		 // image height
-	int bpp;		 // bits per pixel
-	int size;		 // data size
-	std::string data;// image data buffer
+	    ImagePacket(Coord topleft, Coord topright, Coord botleft, Coord botright, int width, int height, int bpp, void* data);
+	    ImagePacket(std::string raw);
 
-    ImagePacket(Coord topleft, Coord topright, Coord botleft, Coord botright, int width, int height, int bpp, void* data);
-    ImagePacket(std::string raw);
+	    // returns packet buffer
+	    std::string GetImage(){return data;}
+	    std::string GetPacket(){return packet;}
 
-    // returns packet buffer
-    std::string GetImage(){return data;}
-    std::string GetPacket(){return packet;}
+	private:
+	    std::string packet; // packet buffer
 
-private:
-    std::string packet; // packet buffer
+	    friend class boost::serialization::access;
+		template<class Archive>
+		void serialize(Archive & ar, const unsigned int version)
+		{
+			ar & topleft.lat;
+			ar & topleft.lon;
+			ar & topright.lat;
+			ar & topright.lon;
+			ar & botleft.lat;
+			ar & botleft.lon;
+			ar & botright.lat;
+			ar & botright.lon;
 
-    friend class boost::serialization::access;
-	template<class Archive>
-	void serialize(Archive & ar, const unsigned int version)
-	{
-		ar & topleft.lat;
-		ar & topleft.lon;
-		ar & topright.lat;
-		ar & topright.lon;
-		ar & botleft.lat;
-		ar & botleft.lon;
-		ar & botright.lat;
-		ar & botright.lon;
-
-		ar & width;
-		ar & height;
-		ar & bpp;
-		ar & size;
-		ar & data;
-	}
+			ar & width;
+			ar & height;
+			ar & bpp;
+			ar & size;
+			ar & data;
+		}
+	};
 };

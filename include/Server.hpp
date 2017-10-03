@@ -4,13 +4,16 @@
 #include "Define.h"
 
 // server that receives messages
-class Server
+namespace proto
 {
-public:
-	Server(std::string address);
-	std::vector<AddressedMessage> Recv(); // waits for at least one message and returns
+	class Server
+	{
+	public:
+		Server(std::string address);
+		std::vector<AddressedMessage> Recv(); // waits for at least one message and returns
 
-private:
-	zmq::context_t context;
-	zmq::socket_t socket;
+	private:
+		zmq::context_t context;
+		zmq::socket_t socket;
+	};
 };

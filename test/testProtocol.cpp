@@ -6,6 +6,8 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
+using namespace proto;
+
 #define ADDRESS std::string("tcp://127.0.0.1:20000")
 
 int main(int argc, char *argv[])

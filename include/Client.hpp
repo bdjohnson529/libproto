@@ -3,15 +3,18 @@
 #include "Define.h"
 
 // client that sends messages
-class Client
+namespace proto
 {
-public:
-	Client(std::string name, std::string address);
-	void Send(std::string msg);
-	std::string GetName(){return name;}
+	class Client
+	{
+	public:
+		Client(std::string name, std::string address);
+		void Send(std::string msg);
+		std::string GetName(){return name;}
 
-private:
-	zmq::context_t context;
-	zmq::socket_t socket;
-	std::string name;
+	private:
+		zmq::context_t context;
+		zmq::socket_t socket;
+		std::string name;
+	};
 };
