@@ -1,7 +1,7 @@
 project(protocol)
 cmake_minimum_required(VERSION 2.6)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -g")
+set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 
@@ -13,7 +13,7 @@ find_package(Boost 1.54 COMPONENTS iostreams serialization)
 
 # Include directories
 include_directories(
-    /user/include
+    /usr/include
     /usr/local/include/
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/include/zmq
@@ -23,12 +23,13 @@ include_directories(
 link_directories(
 	/usr/lib
 	/usr/local/lib
+	${PROJECT_SOURCE_DIR}/lib
 )
 
 file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB HEADER "${PROJECT_SOURCE_DIR}/include/*.h*")
 
-add_library(Proto STATIC ${SOURCES} ${HEADERS})
+add_library(proto STATIC ${SOURCES} ${HEADERS})
 
 add_executable(testProtocol ${PROJECT_SOURCE_DIR}/test/testProtocol.cpp)
-target_link_libraries(testProtocol Proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
+target_link_libraries(testProtocol proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
