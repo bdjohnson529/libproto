@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 
 # OpenCV
-find_package(OpenCV 3.0.0 REQUIRED)
+#find_package(OpenCV 3.0.0 REQUIRED)
 
 # Boost
 find_package(Boost 1.54 COMPONENTS iostreams serialization)
@@ -17,7 +17,7 @@ include_directories(
     /usr/local/include/
 	${PROJECT_SOURCE_DIR}/include
 	${PROJECT_SOURCE_DIR}/include/zmq
-    ${OpenCV_INCLUDE_DIRS}
+    #${OpenCV_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -31,5 +31,5 @@ file(GLOB HEADER "${PROJECT_SOURCE_DIR}/include/*.h*")
 
 add_library(proto STATIC ${SOURCES} ${HEADERS})
 
-add_executable(testProtocol ${PROJECT_SOURCE_DIR}/test/testProtocol.cpp)
-target_link_libraries(testProtocol proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
+#add_executable(testProtocol ${PROJECT_SOURCE_DIR}/test/testProtocol.cpp)
+#target_link_libraries(testProtocol proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
