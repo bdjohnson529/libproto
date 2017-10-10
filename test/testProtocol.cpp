@@ -44,14 +44,10 @@ int main(int argc, char *argv[])
 	s_sleep(1000);
 
 	// receive on the server
-	std::vector<AddressedMessage> msgs;
-	do
-	{
-		msgs = server.Recv();
-	} while(msgs.front().message.size() == 0);
+	AddressedMessage msg = server.Recv();
 
 	// create the message object
-	Message rmsg(msgs.front().message, PROTO_COMPRESSION);
+	Message rmsg(msg.message, PROTO_COMPRESSION);
 
 	// decode the packet
 	assert(rmsg.Header().type == MessageType::IMAGE);

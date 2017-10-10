@@ -12,35 +12,12 @@ namespace proto
 		socket.bind(address); // bind server to address
 	}
 
-	std::vector<AddressedMessage> Server::Recv()
+	// blocks and returns the oldest message
+	AddressedMessage Server::Recv()
 	{
-		std::vector<AddressedMessage> msgs;
-		while(true)
-		{
-			// get the sender
-			std::string sender = s_recv(socket, true);
-
-			// break if empty
-			if(sender == "" && msgs.size() > 0)
-				return msgs;
-			else if(sender == ""  && msgs.size() == 0)
-			{
-				s_sleep(PROTO_SLEEP);
-				continue;
-			}
-
-			// get the message
-			std::string message = s_recv(socket, true);
-
-			// break if empty
-			if(message == "")
-			{
-				s_sleep(PROTO_SLEEP);
-				continue;
-			}
-
-			msgs.push_back(AddressedMessage(sender,message));
-		}
-		return msgs;
+		AddressedMessage msg;
+		msg.address = s_recv(socket, false);
+		msg.message = s_recv(socket, false);
+		return msg;
 	}
 };

@@ -10,7 +10,7 @@ namespace proto
 	{
 	public:
 		Server(std::string address);
-		std::vector<AddressedMessage> Recv(); // waits for at least one message and returns
+		AddressedMessage Recv(); // blocks until a message is available
 
 	private:
 		zmq::context_t context;
