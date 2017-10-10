@@ -9,7 +9,7 @@ namespace proto
 		int linger = 0;
 		socket.setsockopt(ZMQ_LINGER, &linger, sizeof(linger)); // close socket immediately
 		socket.setsockopt(ZMQ_SUBSCRIBE, "", 0); // subscribe to all messages
-	    socket.connect(address); // bind subscriber to address
+		socket.bind(address); // bind server to address
 	}
 
 	std::vector<AddressedMessage> Server::Recv()
