@@ -31,11 +31,9 @@ int main(int argc, char *argv[])
 
 	// create an image packet
 	cv::Mat iimage = cv::imread(image_path);
-	Coord a(0,1);
-	Coord b(2,3);
-	Coord c(4,5);
-	Coord d(6,7);
-	ImagePacket ipacket(a, b, c, d, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
+	float pixel_scale = 1.0f;
+	Coord center(0,1);
+	ImagePacket ipacket(pixel_scale, center, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
 	Message wmsg(MessageType::IMAGE, ipacket.GetPacket(), PROTO_COMPRESSION);
 
 	// IMPORTANT : the server will miss the first message from a client
@@ -54,9 +52,7 @@ int main(int argc, char *argv[])
 	ImagePacket opacket(rmsg.Body());
 	cv::Mat oimage = cv::Mat(opacket.height, opacket.width, iimage.type(), (void*) opacket.GetImage().data()).clone();
 	cv::imshow("Image", oimage);
-	std::cout << a.lat << "," << a.lon << std::endl;
-	std::cout << b.lat << "," << b.lon << std::endl;
-	std::cout << c.lat << "," << c.lon << std::endl;
-	std::cout << d.lat << "," << d.lon << std::endl;
+	std::cout << "Scale: " << opacket.pixel_scale << std::endl;
+	std::cout << opacket.center.lat << "," << opacket.center.lon << std::endl;
 	cv::waitKey(0);
 }

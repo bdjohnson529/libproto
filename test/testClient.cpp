@@ -27,11 +27,9 @@ int main(int argc, char *argv[])
 
 	// create an image packet
 	cv::Mat iimage = cv::imread(image_path);
-	Coord a(0,1);
-	Coord b(2,3);
-	Coord c(4,5);
-	Coord d(6,7);
-	ImagePacket ipacket(a, b, c, d, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
+	float pixel_scale = 1.0f;
+	Coord center(0,1);
+	ImagePacket ipacket(pixel_scale, center, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
 	Message wmsg(MessageType::IMAGE, ipacket.GetPacket(), PROTO_COMPRESSION);
 
 	// send every 1 second

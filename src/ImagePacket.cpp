@@ -2,12 +2,10 @@
 
 namespace proto
 {
-	ImagePacket::ImagePacket(Coord topleft, Coord topright, Coord botleft, Coord botright, int width, int height, int bpp, void* data)
+    ImagePacket::ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, void* data)
 	{
-		this->topleft = topleft;
-		this->topright = topright;
-		this->botleft = botleft;
-		this->botright = botright;
+        this->pixel_scale = pixel_scale;
+        this->center = center;
 	    this->width = width;
 		this->height = height;
 		this->bpp = bpp;

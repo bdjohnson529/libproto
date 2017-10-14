@@ -26,11 +26,8 @@ namespace proto
 	class ImagePacket
 	{
 	public:
-		// tie points of image
-		Coord topleft;
-		Coord topright;
-		Coord botleft;
-		Coord botright;
+        float pixel_scale; // meters per pixel
+        Coord center;      // center of image in lat/lon
 
 	    int width;		 // image width
 		int height;		 // image height
@@ -38,7 +35,7 @@ namespace proto
 		int size;		 // data size
 		std::string data;// image data buffer
 
-	    ImagePacket(Coord topleft, Coord topright, Coord botleft, Coord botright, int width, int height, int bpp, void* data);
+        ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, void* data);
 	    ImagePacket(std::string raw);
 
 	    // returns packet buffer
@@ -52,14 +49,9 @@ namespace proto
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version)
 		{
-			ar & topleft.lat;
-			ar & topleft.lon;
-			ar & topright.lat;
-			ar & topright.lon;
-			ar & botleft.lat;
-			ar & botleft.lon;
-			ar & botright.lat;
-			ar & botright.lon;
+            ar & pixel_scale;
+            ar & center.lat;
+            ar & center.lon;
 
 			ar & width;
 			ar & height;

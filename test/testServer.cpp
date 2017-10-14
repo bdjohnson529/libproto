@@ -24,12 +24,8 @@ int main(int argc, char *argv[])
 	std::cout << "Starting Server on " << address << std::endl;
 	Server server(address);
 
-	std::cout << "entry" << std::endl;
-
 	while(true)
 	{
-		std::cout << "loop" << std::endl;
-
 		// receive on the server
 		AddressedMessage msg = server.Recv();
 
@@ -42,6 +38,8 @@ int main(int argc, char *argv[])
 		ImagePacket opacket(rmsg.Body());
 		cv::Mat oimage = cv::Mat(opacket.height, opacket.width, CV_8UC3, (void*) opacket.GetImage().data()).clone();
 		cv::imshow("Image", oimage);
+		std::cout << "Scale: " << opacket.pixel_scale << std::endl;
+		std::cout << opacket.center.lat << "," << opacket.center.lon << std::endl;
 		cv::waitKey(10);
 	}
 }
