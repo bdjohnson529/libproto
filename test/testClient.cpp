@@ -29,7 +29,16 @@ int main(int argc, char *argv[])
 	cv::Mat iimage = cv::imread(image_path);
 	float pixel_scale = 1.0f;
 	Coord center(0,1);
-	ImagePacket ipacket(pixel_scale, center, iimage.cols, iimage.rows, iimage.elemSize() * 8, iimage.data);
+
+	// find the type of image
+	int type = CV_8UC3;
+	if(iimage.type() == CV_8UC1)
+		type = ImagePacket::ImageType::MONO8;
+	else if(iimage.type() == CV_8UC3)
+		type = ImagePacket::ImageType::BGR24;
+	else if(iimage.type() == CV_8UC4)
+		type = ImagePacket::ImageType::BGRA32;
+	ImagePacket ipacket(pixel_scale, center, iimage.cols, iimage.rows, iimage.elemSize() * 8, type, iimage.data);
 	Message wmsg(MessageType::IMAGE, ipacket.GetPacket(), PROTO_COMPRESSION);
 
 	// send every 1 second

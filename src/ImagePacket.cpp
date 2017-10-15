@@ -2,13 +2,14 @@
 
 namespace proto
 {
-    ImagePacket::ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, void* data)
+    ImagePacket::ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, int type, void* data)
 	{
         this->pixel_scale = pixel_scale;
         this->center = center;
 	    this->width = width;
 		this->height = height;
 		this->bpp = bpp;
+		this->type = type;
 		this->size = (width * height * bpp) / 8;
 		this->data = std::string((const char*) data, size);
 		std::ostringstream oss;

@@ -26,36 +26,45 @@ namespace proto
 	class ImagePacket
 	{
 	public:
-        float pixel_scale; // meters per pixel
-        Coord center;      // center of image in lat/lon
+		enum ImageType
+		{
+			MONO8,
+			BGR24,
+			BGRA32
+		};
 
-	    int width;		 // image width
+		float pixel_scale; // meters per pixel
+		Coord center;      // center of image in lat/lon
+
+		int width;		 // image width
 		int height;		 // image height
 		int bpp;		 // bits per pixel
+		int type;		 // pixel type
 		int size;		 // data size
 		std::string data;// image data buffer
 
-        ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, void* data);
-	    ImagePacket(std::string raw);
+		ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, int type, void* data);
+		ImagePacket(std::string raw);
 
-	    // returns packet buffer
-	    std::string GetImage(){return data;}
-	    std::string GetPacket(){return packet;}
+		// returns packet buffer
+		std::string GetImage(){return data;}
+		std::string GetPacket(){return packet;}
 
 	private:
-	    std::string packet; // packet buffer
+		std::string packet; // packet buffer
 
-	    friend class boost::serialization::access;
+		friend class boost::serialization::access;
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version)
 		{
-            ar & pixel_scale;
-            ar & center.lat;
-            ar & center.lon;
+			ar & pixel_scale;
+			ar & center.lat;
+			ar & center.lon;
 
 			ar & width;
 			ar & height;
 			ar & bpp;
+			ar & type;
 			ar & size;
 			ar & data;
 		}

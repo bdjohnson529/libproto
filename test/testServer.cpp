@@ -36,7 +36,15 @@ int main(int argc, char *argv[])
 		// decode the packet
 		assert(rmsg.Header().type == MessageType::IMAGE);
 		ImagePacket opacket(rmsg.Body());
-		cv::Mat oimage = cv::Mat(opacket.height, opacket.width, CV_8UC3, (void*) opacket.GetImage().data()).clone();
+
+		int type = ImagePacket::ImageType::BGR24;
+		if(opacket.type == ImagePacket::ImageType::MONO8)
+			type = CV_8UC1;
+		else if(opacket.type == ImagePacket::ImageType::BGR24)
+			type = CV_8UC3;
+		else if(opacket.type == ImagePacket::ImageType::BGRA32)
+			type = CV_8UC4;
+		cv::Mat oimage = cv::Mat(opacket.height, opacket.width, type, (void*) opacket.GetImage().data()).clone();
 		cv::imshow("Image", oimage);
 		std::cout << "Scale: " << opacket.pixel_scale << std::endl;
 		std::cout << opacket.center.lat << "," << opacket.center.lon << std::endl;
