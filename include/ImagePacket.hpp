@@ -33,9 +33,8 @@ namespace proto
 			BGRA32
 		};
 
-		float pixel_scale; // meters per pixel
 		Coord center;      // center of image in lat/lon
-
+        int zoom;          // web mercator zoom level
 		int width;		 // image width
 		int height;		 // image height
 		int bpp;		 // bits per pixel
@@ -43,7 +42,7 @@ namespace proto
 		int size;		 // data size
 		std::string data;// image data buffer
 
-		ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, int type, void* data);
+        ImagePacket(Coord center, int zoom, int width, int height, int bpp, int type, void* data);
 		ImagePacket(std::string raw);
 
 		// returns packet buffer
@@ -57,9 +56,9 @@ namespace proto
 		template<class Archive>
 		void serialize(Archive & ar, const unsigned int version)
 		{
-			ar & pixel_scale;
 			ar & center.lat;
 			ar & center.lon;
+            ar & zoom;
 
 			ar & width;
 			ar & height;

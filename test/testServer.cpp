@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 			type = CV_8UC4;
 		cv::Mat oimage = cv::Mat(opacket.height, opacket.width, type, (void*) opacket.GetImage().data()).clone();
 		cv::imshow("Image", oimage);
-		std::cout << "Scale: " << opacket.pixel_scale << std::endl;
+		std::cout << "Zoom: " << opacket.zoom << std::endl;
 		std::cout << opacket.center.lat << "," << opacket.center.lon << std::endl;
 		cv::waitKey(10);
 	}

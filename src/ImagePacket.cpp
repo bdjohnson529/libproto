@@ -2,10 +2,10 @@
 
 namespace proto
 {
-    ImagePacket::ImagePacket(float pixel_scale, Coord center, int width, int height, int bpp, int type, void* data)
+    ImagePacket::ImagePacket(Coord center, int zoom, int width, int height, int bpp, int type, void* data)
 	{
-        this->pixel_scale = pixel_scale;
         this->center = center;
+        this->zoom = zoom;
 	    this->width = width;
 		this->height = height;
 		this->bpp = bpp;

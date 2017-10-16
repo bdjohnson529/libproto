@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
 
 	// create an image packet
 	cv::Mat iimage = cv::imread(image_path);
-	float pixel_scale = 1.0f;
 	Coord center(0,1);
+	float zoom = 0;
 
 	// find the type of image
 	int type = CV_8UC3;
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		type = ImagePacket::ImageType::BGR24;
 	else if(iimage.type() == CV_8UC4)
 		type = ImagePacket::ImageType::BGRA32;
-	ImagePacket ipacket(pixel_scale, center, iimage.cols, iimage.rows, iimage.elemSize() * 8, type, iimage.data);
+	ImagePacket ipacket(center, zoom, iimage.cols, iimage.rows, iimage.elemSize() * 8, type, iimage.data);
 	Message wmsg(MessageType::IMAGE, ipacket.GetPacket(), PROTO_COMPRESSION);
 
 	// send every 1 second
