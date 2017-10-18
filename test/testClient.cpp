@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 	// create an image packet
 	cv::Mat iimage = cv::imread(image_path);
 	Coord center(0,0);
-	float zoom = 2;
+	float zoom = 8;
 
 	// find the type of image
 	int type = CV_8UC3;
