@@ -1,19 +1,24 @@
-#pragma once
-#include <vector>
-#include <zhelpers.hpp>
+#include <iostream>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+
 #include "Define.h"
 
-// server that receives messages
 namespace proto
 {
-	class Server
-	{
-	public:
-		Server(std::string address);
-		AddressedMessage Recv(); // blocks until a message is available
+    class Server
+    {
+        int server, client; // socket file descriptors
 
-	private:
-		zmq::context_t context;
-		zmq::socket_t socket;
-	};
-};
+    public:
+        Server(int portNum);
+        std::string Recv(int data_size);
+        int RecvAll(void * data, int data_size);
+    };
+}
