@@ -36,11 +36,6 @@ namespace proto
 
 	int Client::Send(const void * buffer, int buffer_size)
 	{
-		//std::string message = "This is a test message.";
-		//char buf[28000];
-		//std::strcpy(buf, msg.c_str() );
-		//cout << buf << endl;
-
 		int bytes_sent;
 
 		bytes_sent = send(client, buffer, buffer_size, 0);
