@@ -1,20 +1,25 @@
-#pragma once
-#include <zhelpers.hpp>
-#include "Define.h"
+#include <iostream>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <time.h>
 
-// client that sends messages
+#include <cstring>
+
 namespace proto
 {
 	class Client
 	{
-	public:
-		Client(std::string name, std::string address);
-		void Send(std::string msg);
-		std::string GetName(){return name;}
+		int client; // socket file descriptors
 
-	private:
-		zmq::context_t context;
-		zmq::socket_t socket;
-		std::string name;
+	public:
+		Client(std::string address, int portNum);
+		int Send(const void * buffer, int buffer_size);
+		int SendAll(const void *data, int data_size);
 	};
-};
+}
