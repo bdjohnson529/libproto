@@ -4,7 +4,7 @@ using namespace std;
 
 namespace proto
 {
-	// Starts a server on all available addresses
+    // Starts a server on all available addresses
     Server::Server(int portNum)
     {
         struct sockaddr_in server_addr;
@@ -36,7 +36,7 @@ namespace proto
         if (client < 0)
             cout << "--------- Error accepting client" << std::endl;
 
-        send(client, "", bufSize, 0);
+        //send(client, "", bufSize, 0);
 
         std::cout << "--------- Client connected" << std::endl;
     }
@@ -55,9 +55,12 @@ namespace proto
         return msg;
     }
 
-    int Server::RecvAll(void * data, int data_size)
+    std::string Server::RecvAll()
     {
-        char * data_ptr = (char*) data;
+        char message[message_length];
+        int data_size = message_length;
+
+        char * data_ptr = (char*) message;
         int bytes_recv, total_bytes = 0;
 
         while (data_size > 0)
@@ -65,7 +68,7 @@ namespace proto
             bytes_recv = recv(client, data_ptr, data_size, 0);
 
             if (bytes_recv <= 0)
-                return -1;
+                return "";
 
             //std::cout << "Bytes received: " << bytes_recv << std::endl;
 
@@ -74,7 +77,11 @@ namespace proto
             total_bytes += bytes_recv;
         }
 
-        return total_bytes;
+        std::cout << "Total " << total_bytes << " bytes received." << std::endl;
+
+        std::string messageString(&message[0], &message[300000-1] );
+
+        return messageString;
     }
 
 }
