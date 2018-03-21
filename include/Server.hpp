@@ -15,10 +15,11 @@ namespace proto
     class Server
     {
         int server, client; // socket file descriptors
+        int message_length = 300000;	// message length in bytes
 
     public:
         Server(int portNum);
         std::string Recv(int data_size);
-        int RecvAll(void * data, int data_size);
+        std::string RecvAll();
     };
 }
