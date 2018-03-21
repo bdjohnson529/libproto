@@ -7,6 +7,7 @@
 
 using namespace proto;
 
+/*
 int main(int argc, char *argv[])
 {
 	if(argc != 3)
@@ -51,3 +52,4 @@ int main(int argc, char *argv[])
 		cv::waitKey(10);
 	}
 }
+*/

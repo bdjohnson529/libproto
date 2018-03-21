@@ -10,6 +10,7 @@ using namespace proto;
 
 #define ADDRESS std::string("tcp://127.0.0.1:20000")
 
+/*
 int main(int argc, char *argv[])
 {
 	std::string image_path = "../images/opencv.png";
@@ -55,3 +56,4 @@ int main(int argc, char *argv[])
 	std::cout << opacket.center.lat << "," << opacket.center.lon << std::endl;
 	cv::waitKey(0);
 }
+*/

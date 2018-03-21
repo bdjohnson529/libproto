@@ -36,7 +36,7 @@ namespace proto
         if (client < 0)
             cout << "--------- Error accepting client" << std::endl;
 
-        send(client, "", bufSize, 0);
+        //send(client, "", bufSize, 0);
 
         std::cout << "--------- Client connected" << std::endl;
     }

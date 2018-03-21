@@ -7,6 +7,7 @@
 
 using namespace proto;
 
+/*
 int main(int argc, char *argv[])
 {
 	if(argc != 4)
@@ -53,3 +54,4 @@ int main(int argc, char *argv[])
 		s_sleep(1000);
 	}
 }
+*/
