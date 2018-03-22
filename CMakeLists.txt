@@ -35,12 +35,3 @@ file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB HEADER "${PROJECT_SOURCE_DIR}/include/*.h*")
 
 add_library(proto STATIC ${SOURCES} ${HEADERS})
-
-if(WITH_TESTS)
-add_executable(testProtocol ${PROJECT_SOURCE_DIR}/test/testProtocol.cpp)
-target_link_libraries(testProtocol proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
-add_executable(testClient ${PROJECT_SOURCE_DIR}/test/testClient.cpp)
-target_link_libraries(testClient proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
-add_executable(testServer ${PROJECT_SOURCE_DIR}/test/testServer.cpp)
-target_link_libraries(testServer proto ${OpenCV_LIBS} z zmq boost_system boost_iostreams boost_serialization pthread)
-endif(WITH_TESTS)

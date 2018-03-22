@@ -34,7 +34,20 @@ namespace proto
 			cout << "- Connected to server..." << endl;
 	}
 
-	int Client::Send(const void * buffer, int buffer_size)
+	int Client::Send(std::string message)
+	{
+		int bytes_sent;
+
+		char data[buffer_size];
+		std::copy(message.begin(), message.end(), data);
+
+		bytes_sent = send(client, &data[0], buffer_size, 0);
+
+		return bytes_sent;
+	}
+
+	/***
+	int Client::Send(const void * buffer)
 	{
 		int bytes_sent;
 
@@ -42,6 +55,7 @@ namespace proto
 
 		return bytes_sent;
 	}
+	***/
 
 	int Client::SendAll(const void *data, int data_size)
 	{
