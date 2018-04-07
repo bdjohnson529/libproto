@@ -63,6 +63,7 @@ namespace proto
         char * data_ptr = (char*) message;
         int bytes_recv, total_bytes = 0;
 
+        std::string buffer;
         while (data_size > 0)
         {
             bytes_recv = recv(client, data_ptr, data_size, 0);
@@ -72,6 +73,9 @@ namespace proto
 
             //std::cout << "Bytes received: " << bytes_recv << std::endl;
 
+            std::string tmp(data_ptr, data_ptr + bytes_recv);
+            buffer.append(tmp);
+
             data_ptr += bytes_recv;
             data_size -= bytes_recv;
             total_bytes += bytes_recv;
@@ -79,9 +83,7 @@ namespace proto
 
         std::cout << "Total " << total_bytes << " bytes received." << std::endl;
 
-        std::string messageString(&message[0], &message[300000-1] );
-
-        return messageString;
+        return buffer;
     }
 
 }

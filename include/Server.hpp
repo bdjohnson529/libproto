@@ -15,7 +15,7 @@ namespace proto
     class Server
     {
         int server, client; // socket file descriptors
-        int message_length = 300000;	// message length in bytes
+        int message_length = 3000000;	// message length in bytes
 
     public:
         Server(int portNum);
