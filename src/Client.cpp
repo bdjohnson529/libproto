@@ -41,7 +41,11 @@ namespace proto
 		char data[buffer_size];
 		std::copy(message.begin(), message.end(), data);
 
+		//cout << "buffer_size: " << buffer_size << endl;
+		//cout << "message : " << message.substr(0,100) << endl;
 		bytes_sent = send(client, &data[0], buffer_size, 0);
+
+		//std::cout << "size: " << message.size() << "\tmessage substr: " << message.substr(0,100) << std::endl;
 
 		return bytes_sent;
 	}
@@ -65,14 +69,15 @@ namespace proto
 		while (data_size > 0)
 		{
 			bytes_sent = send(client, data_ptr, data_size, 0);
+
 			if (bytes_sent == -1)
 				return -1;
+
+			data_ptr += bytes_sent;
+			data_size -= bytes_sent;
 		}
 
-		data_ptr += bytes_sent;
-		data_size -= bytes_sent;
-
-		return 1;
+		return bytes_sent;
 	}
 
 
