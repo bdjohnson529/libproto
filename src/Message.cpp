@@ -20,14 +20,14 @@ namespace proto
 
 	Message::Message(std::string raw, bool compressed)
 	{
-		this->msg = raw;
+        this->msg = raw;
 		std::istringstream iss(raw);
 		boost::archive::text_iarchive archive(iss);
 		archive >> *this;
 
 		// decompress if enabled
-		if(compressed)
-			this->body = Decompress(this->body);
+        if(compressed)
+            this->body = Decompress(this->body);
 	}
 
 	void Message::operator=(Message &rhs)
