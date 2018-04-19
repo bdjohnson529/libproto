@@ -16,7 +16,7 @@ namespace proto
 	class Client
 	{
 		int client; // socket file descriptors
-		int buffer_size = 3000000;
+		int buffer_size = 500000;
 
 	public:
 		Client(std::string address, int portNum);

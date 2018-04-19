@@ -42,8 +42,10 @@ namespace proto
 		std::copy(message.begin(), message.end(), data);
 
 		//cout << "buffer_size: " << buffer_size << endl;
-		//cout << "message : " << message.substr(0,100) << endl;
+		cout << "message.length() : " << message.length() << endl;
+		std::cout << "Before send" << std::endl;
 		bytes_sent = send(client, &data[0], buffer_size, 0);
+		std::cout << "After send" << std::endl;
 
 		//std::cout << "size: " << message.size() << "\tmessage substr: " << message.substr(0,100) << std::endl;
 

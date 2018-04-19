@@ -82,8 +82,6 @@ namespace proto
         } while (ret == Z_OK);
         delete[] outbuffer;
 
-        std::cout << "inflate called " << idx << " times." << std::endl;
-
 	    inflateEnd(&zs);
 
         if (ret != Z_STREAM_END) {          // an error occurred that was not EOF
