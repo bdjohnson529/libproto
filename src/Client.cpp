@@ -13,16 +13,26 @@ namespace proto
 
 		//-- Verify creation of client
 		if (client < 0) {
-			cout << "\n-Error establishing socket..." << endl;
+			cout << "-Error establishing socket..." << endl;
 			exit(-1);
 		} else
-			cout << "\n- Socket client has been created..." << endl;
+			cout << "- Socket client has been created..." << endl;
 
 
 		server_addr.sin_family = AF_INET;
 		server_addr.sin_port = htons(portNum);
 
 		inet_pton(AF_INET, address.c_str(), &server_addr.sin_addr);
+
+		// set timeout value
+		struct timeval timeout;
+		timeout.tv_sec = 5;
+		timeout.tv_usec = 0;
+		int ok = setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout));
+		if(ok < 0)
+			cout << "- Error setting socket options..." << endl;
+		else
+			cout << "- Socket options set..." << endl;
 
 		int success = connect(client, (struct sockaddr *) &server_addr, sizeof(server_addr));
 
@@ -42,11 +52,10 @@ namespace proto
 		std::copy(message.begin(), message.end(), data);
 
 		//cout << "buffer_size: " << buffer_size << endl;
-		cout << "message.length() : " << message.length() << endl;
-		std::cout << "Before send" << std::endl;
+		//cout << "message.length() : " << message.length() << endl;
 		bytes_sent = send(client, &data[0], buffer_size, 0);
-		std::cout << "After send" << std::endl;
 
+		std::cout << bytes_sent << " bytes sent." << endl;
 		//std::cout << "size: " << message.size() << "\tmessage substr: " << message.substr(0,100) << std::endl;
 
 		return bytes_sent;
