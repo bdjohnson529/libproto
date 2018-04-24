@@ -59,7 +59,7 @@ namespace proto
 		char checksum[] = "jackhammer";
 		strncpy( (data_ptr + (buffer_size - 10) ), checksum, 10);
 
-		bytes_sent = send(client, &data[0], buffer_size, 0);
+		bytes_sent = send(client, &data[0], buffer_size, MSG_NOSIGNAL);
 
 		std::cout << bytes_sent << " bytes sent." << endl;
 		//std::cout << "size: " << message.size() << "\tmessage substr: " << message.substr(0,100) << std::endl;
