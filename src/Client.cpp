@@ -36,6 +36,9 @@ namespace proto
 
 		int success = connect(client, (struct sockaddr *) &server_addr, sizeof(server_addr));
 
+		poll_list[0].fd = client;
+		poll_list[0].events = POLLOUT;
+
 		//-- Verify connection to server
 		if (success != 0) {
 			cout << "- Error connecting to server. Application terminated" << endl;
@@ -64,16 +67,11 @@ namespace proto
 		return bytes_sent;
 	}
 
-	/***
-	int Client::Send(const void * buffer)
+	int Client::Poll()
 	{
-		int bytes_sent;
-
-		bytes_sent = send(client, buffer, buffer_size, 0);
-
-		return bytes_sent;
+		int retval = poll(poll_list, 1, 10000);
+		return retval;
 	}
-	***/
 
 	int Client::SendAll(const void *data, int data_size)
 	{
