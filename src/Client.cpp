@@ -24,12 +24,18 @@ namespace proto
 
 		inet_pton(AF_INET, address.c_str(), &server_addr.sin_addr);
 
-		// set timeout value
+		int opt1, opt2, opt3, yes = 1;
+
+		// timeout value
 		struct timeval timeout;
 		timeout.tv_sec = 5;
 		timeout.tv_usec = 0;
-		int ok = setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout));
-		if(ok < 0)
+
+		// set socket options
+		opt1 = setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout));
+		opt2 = setsockopt(client, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+		opt3 = setsockopt(client, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
+		if(opt1 < 0 || opt2 < 0 || opt3 < 0)
 			cout << "- Error setting socket options..." << endl;
 		else
 			cout << "- Socket options set..." << endl;
@@ -41,10 +47,13 @@ namespace proto
 
 		//-- Verify connection to server
 		if (success != 0) {
-			cout << "- Error connecting to server. Application terminated" << endl;
-			exit(-1);
-		} else
+			close(client);
+			cout << "- Error connecting to server." << endl;
+			status = false;
+		} else {
 			cout << "- Connected to server..." << endl;
+			status = true;
+		}
 	}
 
 	int Client::Send(std::string message)
@@ -90,6 +99,11 @@ namespace proto
 		}
 
 		return bytes_sent;
+	}
+
+	int Client::Close()
+	{
+		close(client);
 	}
 
 

@@ -25,5 +25,8 @@ namespace proto
 		int Send(std::string message);
 		int SendAll(const void *data, int data_size);
 		int Poll();
+		int Close();
+
+		bool status;
 	};
 }
