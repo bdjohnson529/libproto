@@ -51,8 +51,11 @@ namespace proto
 		char data[buffer_size];
 		std::copy(message.begin(), message.end(), data);
 
-		//cout << "buffer_size: " << buffer_size << endl;
-		//cout << "message.length() : " << message.length() << endl;
+		// checksum to ensure full message receipt
+		char * data_ptr = (char *) data;
+		char checksum[] = "jackhammer";
+		strncpy( (data_ptr + (buffer_size - 10) ), checksum, 10);
+
 		bytes_sent = send(client, &data[0], buffer_size, 0);
 
 		std::cout << bytes_sent << " bytes sent." << endl;
