@@ -42,6 +42,7 @@ namespace proto
 
 		int success = connect(client, (struct sockaddr *) &server_addr, sizeof(server_addr));
 
+		// set polling list
 		poll_list[0].fd = client;
 		poll_list[0].events = POLLOUT;
 
@@ -71,9 +72,11 @@ namespace proto
 		bytes_sent = send(client, &data[0], buffer_size, MSG_NOSIGNAL);
 
 		std::cout << bytes_sent << " bytes sent." << endl;
-		//std::cout << "size: " << message.size() << "\tmessage substr: " << message.substr(0,100) << std::endl;
 
-		return bytes_sent;
+		if (bytes_sent == buffer_size)
+			return bytes_sent;
+		else
+			return -1;
 	}
 
 	int Client::Poll()
