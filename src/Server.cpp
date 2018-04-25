@@ -17,11 +17,25 @@ namespace proto
         server_addr.sin_addr.s_addr = htons(INADDR_ANY);
         server_addr.sin_port = htons(portNum);
 
+        // set timeout
+        struct timeval timeout;
+        timeout.tv_sec = 5;
+        timeout.tv_usec = 0;
+
         int yes = 1;
         if(setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
             std::cout << "--------- Error setting socket options" << std::endl;
             exit(-1);
         }
+        if(setsockopt(server, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) == -1) {
+            std::cout << "--------- Error setting socket options" << std::endl;
+            exit(-1);
+        }
+        /**
+        if(setsockopt(server, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) == -1) {
+            std::cout << "--------- Error setting socket options" << std::endl;
+            exit(-1);
+        }**/
 
         int success = bind(server, (struct sockaddr*) &server_addr, sizeof(server_addr) );
         if(success != 0) {
@@ -36,21 +50,25 @@ namespace proto
         if (client < 0)
             cout << "--------- Error accepting client" << std::endl;
 
-        //send(client, "", bufSize, 0);
+        // Initialize polling
+        poll_list[0].fd = client;
+        poll_list[0].events = POLLIN;
 
         std::cout << "--------- Client connected" << std::endl;
+
+        sleep (2);
     }
 
 
-    std::string Server::Recv(int data_size)
+    std::string Server::Recv()
     {
-        char buffer[data_size];
+        char buffer[message_length];
 
-        int bytes_recv = recv(client, buffer, sizeof(buffer), 0);
+        int bytes_recv = recv(client, buffer, message_length, 0);
 
         std::cout << "Bytes received: " << bytes_recv << std::endl;
 
-        std::string msg = string(&buffer[0], &buffer[data_size - 1] );
+        std::string msg(buffer, buffer + message_length);
 
         return msg;
     }
@@ -63,18 +81,18 @@ namespace proto
         char * data_ptr = (char*) message;
         int bytes_recv, total_bytes = 0;
 
-        std::string buffer = "";
         while (data_size > 0)
         {
+            bytes_recv = 0;
             bytes_recv = recv(client, data_ptr, data_size, 0);
 
-            if (bytes_recv <= 0)
-                return buffer;
+            if (bytes_recv <= 0) {
+                std::cout << "Early terminate" << std::endl;
+                return "";
+            }
 
-            //std::cout << "Bytes received: " << bytes_recv << std::endl;
-
-            std::string tmp(data_ptr, data_ptr + bytes_recv);
-            buffer.append(tmp);
+            //std::string tmp(data_ptr, data_ptr + bytes_recv);
+            //buffer.append(tmp);
 
             data_ptr += bytes_recv;
             data_size -= bytes_recv;
@@ -83,7 +101,30 @@ namespace proto
 
         std::cout << "Total " << total_bytes << " bytes received." << std::endl;
 
-        return buffer;
+        data_ptr = (char*) message;
+        std::string checksum(data_ptr + (message_length - 10), data_ptr + message_length);
+        std::cout << checksum << std::endl;
+        std::string buffer( data_ptr, data_ptr + total_bytes);
+
+        if (total_bytes = message_length && checksum == "jackhammer") {
+            std::cout << "full message received" << std::endl;
+            return buffer;
+        }
+        else {
+            std::cout << "partial message received" << std::endl;
+            return "";
+        }
+    }
+
+    int Server::Poll()
+    {
+        int retval = poll(poll_list, 1, 10000);
+        return retval;
+    }
+
+    int Server::Close()
+    {
+        close(client);
     }
 
 }
