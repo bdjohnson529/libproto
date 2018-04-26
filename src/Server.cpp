@@ -7,58 +7,68 @@ namespace proto
     // Starts a server on all available addresses
     Server::Server(int portNum)
     {
-        struct sockaddr_in server_addr;
-        socklen_t size;
+        bool set = false;
 
-        server = socket(AF_INET, SOCK_STREAM, 0);
+        while (set == false) {
 
-        // Initialize server address struct
-        server_addr.sin_family = AF_INET;
-        server_addr.sin_addr.s_addr = htons(INADDR_ANY);
-        server_addr.sin_port = htons(portNum);
+            // Initialize address struct
+            struct sockaddr_in server_addr;
+            server_addr.sin_family = AF_INET;
+            server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+            server_addr.sin_port = htons(portNum);
 
-        // set timeout
-        struct timeval timeout;
-        timeout.tv_sec = 5;
-        timeout.tv_usec = 0;
+            socklen_t size;
 
-        int yes = 1;
-        if(setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
-            std::cout << "--------- Error setting socket options" << std::endl;
-            exit(-1);
+            // Create server socket
+            server = socket(AF_INET, SOCK_STREAM, 0);
+
+            // Populate recv timeout
+            struct timeval timeout;
+            timeout.tv_sec = 10;
+            timeout.tv_usec = 0;
+
+            // Set socket options
+            int yes = 1, opt1, opt2, opt3;
+            opt1 = setsockopt(server, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+            opt2 = setsockopt(server, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
+            opt3 = setsockopt(server, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
+
+            if (opt1 != 0 || opt2 != 0 || opt3 != 0) {
+                std::cout << "--------- Error setting socket options : " << strerror(errno) << std::endl;
+                close(server);
+                continue;
+            }
+
+            if ( bind(server, (struct sockaddr *) &server_addr, sizeof(server_addr) ) != 0 ) {
+                std::cout << "--------- Error binding connection : " << strerror(errno) << std::endl;
+                close(server);
+                continue;
+            }
+
+            listen(server, 1);
+
+            // Loop until there is a connection available
+            do {
+                std::cout << "--------- Waiting for client..." << std::endl;
+                client = accept(server, (struct sockaddr *) &server_addr, &size);
+            } while ( client < 0 && errno == 11 );
+
+            if (client < 0) {
+                std::cout << "--------- Error accepting client : " << strerror(errno) << std::endl;
+                close(server);
+                continue;
+            } else {
+                std::cout << "---------Connection established." << std::endl;
+                set = true;
+            }
         }
-        if(setsockopt(server, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) == -1) {
-            std::cout << "--------- Error setting socket options" << std::endl;
-            exit(-1);
-        }
-        /**
-        if(setsockopt(server, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) == -1) {
-            std::cout << "--------- Error setting socket options" << std::endl;
-            exit(-1);
-        }**/
-
-        int success = bind(server, (struct sockaddr*) &server_addr, sizeof(server_addr) );
-        if(success != 0) {
-            std::cout << "--------- Error binding connection\n";
-            exit(-1);
-        }
-
-        listen(server, 1);
-
-        std::cout << "--------- Waiting for client..." << std::endl;
-        client = accept(server, (struct sockaddr *) &server_addr, &size);
-        if (client < 0)
-            cout << "--------- Error accepting client" << std::endl;
 
         // Initialize polling
         poll_list[0].fd = client;
         poll_list[0].events = POLLIN;
 
-        std::cout << "--------- Client connected" << std::endl;
-
         sleep (2);
     }
-
 
     std::string Server::Recv()
     {
@@ -87,12 +97,9 @@ namespace proto
             bytes_recv = recv(client, data_ptr, data_size, 0);
 
             if (bytes_recv <= 0) {
-                std::cout << "Early terminate" << std::endl;
+                std::cout << "Incomplete message received." << std::endl;
                 return "";
             }
-
-            //std::string tmp(data_ptr, data_ptr + bytes_recv);
-            //buffer.append(tmp);
 
             data_ptr += bytes_recv;
             data_size -= bytes_recv;
@@ -101,9 +108,9 @@ namespace proto
 
         std::cout << "Total " << total_bytes << " bytes received." << std::endl;
 
+        // Validate checksum
         data_ptr = (char*) message;
         std::string checksum(data_ptr + (message_length - 10), data_ptr + message_length);
-        std::cout << checksum << std::endl;
         std::string buffer( data_ptr, data_ptr + total_bytes);
 
         if (total_bytes = message_length && checksum == "jackhammer") {

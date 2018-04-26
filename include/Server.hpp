@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <poll.h>
+#include <errno.h>
 
 #include "Define.h"
 
