@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <poll.h>
 
 #include "Define.h"
 
@@ -15,11 +16,15 @@ namespace proto
     class Server
     {
         int server, client; // socket file descriptors
-        int message_length = 3000000;	// message length in bytes
+        int message_length = 500000;	// message length in bytes
+        struct pollfd poll_list[3];
+
 
     public:
         Server(int portNum);
-        std::string Recv(int data_size);
+        std::string Recv();
         std::string RecvAll();
+        int Poll();
+        int Close();
     };
 }
