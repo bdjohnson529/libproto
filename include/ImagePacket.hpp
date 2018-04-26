@@ -34,6 +34,7 @@ namespace proto
 		};
 
 		Coord center;      // center of image in lat/lon
+		float yaw;
         int zoom;          // web mercator zoom level
 		int width;		 // image width
 		int height;		 // image height
@@ -42,7 +43,7 @@ namespace proto
 		int size;		 // data size
 		std::string data;// image data buffer
 
-        ImagePacket(Coord center, int zoom, int width, int height, int bpp, int type, void* data);
+        ImagePacket(Coord center, float yaw, int zoom, int width, int height, int bpp, int type, void* data);
 		ImagePacket(std::string raw);
 
 		// returns packet buffer
@@ -58,6 +59,7 @@ namespace proto
 		{
 			ar & center.lat;
 			ar & center.lon;
+			ar & yaw;
             ar & zoom;
 
 			ar & width;
