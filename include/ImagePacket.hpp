@@ -37,7 +37,7 @@ namespace proto
 			this->pitch = pitch;
 			this->roll = roll;
 		}
-	}
+    };
 
 	// provides an image message class to serialize images
 	class ImagePacket
