@@ -19,6 +19,7 @@ namespace proto
 		int client; // socket file descriptors
 		int buffer_size = 500000;
 		struct pollfd poll_list[3];
+		int timeout_sec = 4;
 
 	public:
 		Client(std::string address, int portNum);

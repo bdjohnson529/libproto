@@ -28,7 +28,7 @@ namespace proto
 
 		// timeout value
 		struct timeval timeout;
-		timeout.tv_sec = 2;
+		timeout.tv_sec = timeout_sec;
 		timeout.tv_usec = 0;
 
 		// set socket options
