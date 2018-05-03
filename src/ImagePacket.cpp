@@ -2,10 +2,10 @@
 
 namespace proto
 {
-    ImagePacket::ImagePacket(Coord center, float yaw, int zoom, int width, int height, int bpp, int type, void* data)
+    ImagePacket::ImagePacket(Coord center, Angles orientation, int zoom, int width, int height, int bpp, int type, void* data)
 	{
         this->center = center;
-        this->yaw = yaw;
+        this->orientation = orientation;
         this->zoom = zoom;
 	    this->width = width;
 		this->height = height;

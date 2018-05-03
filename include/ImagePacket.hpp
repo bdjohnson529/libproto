@@ -22,6 +22,23 @@ namespace proto
 		}
 	};
 
+	struct Angles
+	{
+		float yaw;
+		float pitch;
+		float roll;
+		Angles()
+		{
+
+		}
+		Angles(float yaw, float pitch, float roll)
+		{
+			this->yaw = yaw;
+			this->pitch = pitch;
+			this->roll = roll;
+		}
+	}
+
 	// provides an image message class to serialize images
 	class ImagePacket
 	{
@@ -34,7 +51,7 @@ namespace proto
 		};
 
 		Coord center;      // center of image in lat/lon
-		float yaw;
+		Angles orientation;
         int zoom;          // web mercator zoom level
 		int width;		 // image width
 		int height;		 // image height
@@ -43,7 +60,7 @@ namespace proto
 		int size;		 // data size
 		std::string data;// image data buffer
 
-        ImagePacket(Coord center, float yaw, int zoom, int width, int height, int bpp, int type, void* data);
+        ImagePacket(Coord center, Angles orientation, int zoom, int width, int height, int bpp, int type, void* data);
 		ImagePacket(std::string raw);
 
 		// returns packet buffer
@@ -59,7 +76,9 @@ namespace proto
 		{
 			ar & center.lat;
 			ar & center.lon;
-			ar & yaw;
+			ar & orientation.yaw;
+			ar & orientation.pitch;
+			ar & orientation.roll;
             ar & zoom;
 
 			ar & width;
