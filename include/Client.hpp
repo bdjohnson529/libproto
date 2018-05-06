@@ -10,19 +10,24 @@
 #include <time.h>
 #include <poll.h>
 
+#include <arpa/inet.h>
+
 #include <cstring>
+
+#define timeout_sec 4
 
 namespace proto
 {
 	class Client
 	{
-		int client; // socket file descriptors
+		int sockfd, client; // socket file descriptors
 		int buffer_size = 500000;
 		struct pollfd poll_list[3];
-		int timeout_sec = 4;
+		struct msghdr msg;
+		int MAXDATASIZE = 500000;
 
 	public:
-		Client(std::string address, int portNum);
+		Client(std::string address, std::string port);
 		int Send(std::string message);
 		int SendAll(const void *data, int data_size);
 		int Poll();

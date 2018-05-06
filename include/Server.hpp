@@ -19,6 +19,7 @@ namespace proto
         int server, client; // socket file descriptors
         int message_length = 500000;	// message length in bytes
         struct pollfd poll_list[3];
+        //struct msghdr msg;
 
 
     public:

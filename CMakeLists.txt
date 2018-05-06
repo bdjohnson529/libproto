@@ -2,8 +2,12 @@ project(protocol)
 cmake_minimum_required(VERSION 2.6)
 
 set(CMAKE_CXX_FLAGS "-std=c++11")
+SET(CMAKE_CXX_FLAGS_DEBUG "-O0")
+SET(CMAKE_C_FLAGS_DEBUG "-O0")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+
+set(CMAKE_BUILD_TYPE Debug)
 
 # OpenCV
 option(WITH_TESTS "Build with tests" OFF)
@@ -35,3 +39,10 @@ file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB HEADER "${PROJECT_SOURCE_DIR}/include/*.h*")
 
 add_library(proto STATIC ${SOURCES} ${HEADERS})
+
+
+# Build test executables
+add_executable(testServer ${PROJECT_SOURCE_DIR}/test/testServer.cpp)
+target_link_libraries(testServer proto )
+add_executable(testClient ${PROJECT_SOURCE_DIR}/test/testClient.cpp)
+target_link_libraries(testClient proto )

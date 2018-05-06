@@ -70,21 +70,13 @@ namespace proto
         sleep (2);
     }
 
-    std::string Server::Recv()
-    {
-        char buffer[message_length];
-
-        int bytes_recv = recv(client, buffer, message_length, 0);
-
-        std::cout << "Bytes received: " << bytes_recv << std::endl;
-
-        std::string msg(buffer, buffer + message_length);
-
-        return msg;
-    }
-
     std::string Server::RecvAll()
     {
+
+        //memset( &msg, 0, sizeof(msg) );
+        //this->msg.msg_accrights = (char *)&accept_sd;
+        //this->msg.msg_accrightslen = sizeof(accept_sd);
+
         char message[message_length];
         int data_size = message_length;
 
@@ -122,6 +114,22 @@ namespace proto
             return "";
         }
     }
+
+    // does not work with long messages
+    /*
+    std::string Server::Recv()
+    {
+        char buffer[message_length];
+
+        int bytes_recv = recv(client, buffer, message_length, 0);
+
+        std::cout << "Bytes received: " << bytes_recv << std::endl;
+
+        std::string msg(buffer, buffer + message_length);
+
+        return msg;
+    }
+    */
 
     int Server::Poll()
     {
