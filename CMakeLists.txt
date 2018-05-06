@@ -19,10 +19,6 @@ include_directories(
 	/usr/include
 	/usr/local/include/
 	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/include/zmq
-	if(WITH_TESTS)
-	${OpenCV_INCLUDE_DIRS}
-	endif(WITH_TESTS)
 )
 
 link_directories(
@@ -35,3 +31,7 @@ file(GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 file(GLOB HEADER "${PROJECT_SOURCE_DIR}/include/*.h*")
 
 add_library(proto STATIC ${SOURCES} ${HEADERS})
+
+# Build tests
+add_executable(testServer ${PROJECT_SOURCE_DIR}/test/testServer.cpp)
+target_link_libraries(testServer proto)

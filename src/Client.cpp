@@ -9,7 +9,7 @@ namespace proto
 
 		struct sockaddr_in server_addr;
 
-		client = socket(AF_INET, SOCK_STREAM, 0);
+		sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
 		//-- Verify creation of client
 		if (client < 0) {
@@ -24,23 +24,11 @@ namespace proto
 
 		inet_pton(AF_INET, address.c_str(), &server_addr.sin_addr);
 
-		int opt1, opt2, opt3, yes = 1;
+		SetTimeout(4, 0);
 
-		// timeout value
-		struct timeval timeout;
-		timeout.tv_sec = timeout_sec;
-		timeout.tv_usec = 0;
+		SetOptions(sockfd);
 
-		// set socket options
-		opt1 = setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout));
-		opt2 = setsockopt(client, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-		opt3 = setsockopt(client, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
-		if(opt1 < 0 || opt2 < 0 || opt3 < 0)
-			cout << "- Error setting socket options..." << endl;
-		else
-			cout << "- Socket options set..." << endl;
-
-		int success = connect(client, (struct sockaddr *) &server_addr, sizeof(server_addr));
+		int success = connect(sockfd, (struct sockaddr *) &server_addr, sizeof(server_addr));
 
 		// set polling list
 		poll_list[0].fd = client;
@@ -55,6 +43,44 @@ namespace proto
 			cout << "- Connected to server..." << endl;
 			status = true;
 		}
+	}
+
+	void Client::SetTimeout(float seconds, float useconds)
+	{
+
+		if( timeout_set == false )
+		{
+			this->timeout.tv_sec = seconds;
+			this->timeout.tv_usec = useconds;
+			this->timeout_set = true;
+		}
+
+	}
+
+	bool Client::SetOptions(int sockfd)
+	{
+
+		int yes = 1;
+
+		if ( setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) )
+		{
+			perror("setsockopt");
+			exit(-1);
+		}
+
+		if ( setsockopt(client, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) )
+		{
+			perror("setsockopt");
+			exit(-1);
+		}
+
+		if ( setsockopt(client, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) )
+		{
+			perror("setsockopt");
+			exit(-1);
+		}
+
+
 	}
 
 	int Client::Send(std::string message)
