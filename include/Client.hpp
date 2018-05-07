@@ -14,7 +14,8 @@
 
 #include <cstring>
 
-#define timeout_sec 4
+#define TIMEOUT_SEC 4
+#define ACK_LENGTH 1000
 
 namespace proto
 {

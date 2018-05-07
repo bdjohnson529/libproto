@@ -9,12 +9,7 @@ namespace proto
 	Client::Client(std::string address, string port)
 	{
 
-		//int sockfd, numbytes;  
-		char buf[MAXDATASIZE];
-		struct addrinfo *p;
-		int rv;
-
-		// used to find server address info
+		// set structs to find server address info
 		struct addrinfo hints, *servinfo;
 		memset(&hints, 0, sizeof hints);
 		hints.ai_family = AF_INET;
@@ -22,11 +17,13 @@ namespace proto
 		hints.ai_flags = AI_PASSIVE;
 
 		// find server address info
+		int rv;
 		if ((rv = getaddrinfo(address.c_str(), port.c_str(), &hints, &servinfo)) != 0) {
 			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
 		}
 
 		// loop through all the results and connect to the first we can
+		struct addrinfo *p;
 		for(p = servinfo; p != NULL; p = p->ai_next) {
 			if ((sockfd = socket(p->ai_family, p->ai_socktype,
 					p->ai_protocol)) == -1) {
@@ -62,33 +59,49 @@ namespace proto
 		if(opt1 < 0 || opt2 < 0 || opt3 < 0 || opt4 < 0)
 			cout << "- Error setting socket options..." << endl;
 
-
 		// read back server address
 		char s[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &(((struct sockaddr_in*)p->ai_addr)->sin_addr), s, sizeof s);
-		printf("client: connecting to %s\n", s);
+		printf("Client: connecting to %s\n", s);
 
-		char data[500];
-		int bytes_sent = send(client, &data[0], buffer_size, MSG_NOSIGNAL);
+		// recv ack from server
+        char buffer[ACK_LENGTH];
+		memset(&buffer, 0, sizeof buffer);
+        if ( (recv(sockfd, buffer, ACK_LENGTH, 0) ) == -1 )
+        	perror("recv ack");
+        else
+        {
+	        std::string msg(buffer, buffer + ACK_LENGTH);
+	        printf("Received ACK: %s\n", msg.c_str() );
+        }
 
 		freeaddrinfo(servinfo); // all done with this structure
 
-		
-		/*
-		if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-		    perror("recv");
-		    exit(1);
-		}
-
-		buf[numbytes] = '\0';
-
-		printf("client: received '%s'\n",buf);
-		*/ 
-
-		close(sockfd);
-		
-
 	}
+
+
+	int Client::Send(std::string message)
+	{
+		int bytes_sent;
+
+		char data[buffer_size];
+		std::copy(message.begin(), message.end(), data);
+
+		// checksum to ensure full message receipt
+		char * data_ptr = (char *) data;
+		char checksum[] = "jackhammer";
+		strncpy( (data_ptr + (buffer_size - 10) ), checksum, 10);
+
+		bytes_sent = send(client, &data[0], buffer_size, MSG_NOSIGNAL);
+
+		std::cout << bytes_sent << " bytes sent." << endl;
+
+		if (bytes_sent == buffer_size)
+			return bytes_sent;
+		else
+			return -1;
+	}
+
 
 	/*
 	Client::Client(std::string address, int portNum)
@@ -172,28 +185,6 @@ namespace proto
 
 	}
 	*/
-
-	int Client::Send(std::string message)
-	{
-		int bytes_sent;
-
-		char data[buffer_size];
-		std::copy(message.begin(), message.end(), data);
-
-		// checksum to ensure full message receipt
-		char * data_ptr = (char *) data;
-		char checksum[] = "jackhammer";
-		strncpy( (data_ptr + (buffer_size - 10) ), checksum, 10);
-
-		bytes_sent = send(client, &data[0], buffer_size, MSG_NOSIGNAL);
-
-		std::cout << bytes_sent << " bytes sent." << endl;
-
-		if (bytes_sent == buffer_size)
-			return bytes_sent;
-		else
-			return -1;
-	}
 
 	int Client::Poll()
 	{
