@@ -15,7 +15,7 @@
 #include <cstring>
 
 #define TIMEOUT_SEC 4
-#define ACK_LENGTH 1000
+#define ACK_LENGTH 100
 
 namespace proto
 {
@@ -31,6 +31,9 @@ namespace proto
 		Client(std::string address, std::string port);
 		int Send(std::string message);
 		int SendAll(const void *data, int data_size);
+		int RecvAck(int sockfd);
+		int SendAck(int sockfd);
+		int SetOptions(int sockfd);
 		int Poll();
 		int Close();
 

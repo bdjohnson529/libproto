@@ -44,51 +44,19 @@ namespace proto
 			fprintf(stderr, "client: failed to connect\n");
 		}
 
-
-		// timeout value
-		struct timeval timeout;
-		timeout.tv_sec = 4;
-		timeout.tv_usec = 0;
-
-		// set socket options
-		int opt1, opt2, opt3, opt4, yes=1;
-		opt1 = setsockopt(server_fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout));
-		opt2 = setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-		opt3 = setsockopt(server_fd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
-		opt4 = setsockopt(server_fd, SOL_SOCKET, SO_KEEPALIVE, &yes, sizeof(yes));
-		if(opt1 < 0 || opt2 < 0 || opt3 < 0 || opt4 < 0) {
-			cout << "- Error setting socket options..." << endl;
-			return;
-		}
-
 		// read back server address
 		char s[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &(((struct sockaddr_in*)p->ai_addr)->sin_addr), s, sizeof s);
 		printf("Client: connecting to %s\n", s);
 
-		// recv ack from server
-        char buffer[ACK_LENGTH];
-		memset(&buffer, 0, sizeof buffer);
-        if ( (recv(server_fd, buffer, ACK_LENGTH, 0) ) == -1 ) {
-        	perror("recv ack");
-        	return;
-        }
-	        
-        std::string msg(buffer, buffer + 9);
-        if (msg != "ackattack")
-        	return;
-
-        printf("Received ACK from server.\n");
-
-        // send ack message to server
-        std::string ack_message = "ackattack";
-		memset(&buffer, 0, sizeof buffer);
-		std::copy(ack_message.begin(), ack_message.end(), buffer);
-
-		if ( (send(server_fd, buffer, ACK_LENGTH, 0)) == -1){
-			perror("send ack");
+		if ( SetOptions(server_fd) == -1)
 			return;
-		}
+
+		if ( RecvAck(server_fd) == -1 )
+			return;
+
+        if ( SendAck(server_fd) == -1)
+        	return;
 
 		STATUS = true;
 
@@ -110,11 +78,6 @@ namespace proto
 		char checksum[] = "jackhammer";
 		strncpy( (data_ptr + (buffer_size - 10) ), checksum, 10);
 
-		std::string check(data_ptr + (buffer_size - 10), data_ptr + buffer_size);
-		std::cout << "checksum = " << check << std::endl;
-		std::string beginning(data_ptr, data_ptr+10);
-		std::cout << "start = " << beginning << std::endl;
-
 		bytes_sent = send(server_fd, data_ptr, buffer_size, MSG_NOSIGNAL);
 
 		if(bytes_sent == -1)
@@ -123,94 +86,84 @@ namespace proto
 		std::cout << bytes_sent << " bytes sent." << endl;
 
 		if (bytes_sent == buffer_size)
+		{
+			std::cout << "in loop " << std::endl;
+
+	        char buffer[ACK_LENGTH];
+			memset(&buffer, 0, sizeof buffer);
+			int bytes = recv(server_fd, buffer, ACK_LENGTH, 0);
+			std::cout << "bytes = " << bytes << std::endl;
+				//perror("recv ack");
+	        std::string msg(buffer, buffer + 9);
+	        std::cout << "buffer = " << buffer << std::endl;
+	        if (msg != "ackattack")
+	        	return -1;
+			std::cout << "msg: " << msg << std::endl;
 			return bytes_sent;
+		}
 		else
 			return -1;
 	}
 
-
-	/*
-	Client::Client(std::string address, int portNum)
+	int Client::SendAck(int sockfd)
 	{
+        std::string ack_message = "ackattack";
 
-		struct sockaddr_in server_addr;
+        // send ack message to server
+        char buffer[ACK_LENGTH];
+		memset(&buffer, 0, sizeof buffer);
+		std::copy(ack_message.begin(), ack_message.end(), buffer);
 
-		server_fd = socket(AF_INET, SOCK_STREAM, 0);
-
-		//-- Verify creation of client
-		if (client < 0) {
-			cout << "-Error establishing socket..." << endl;
-			exit(-1);
-		} else
-			cout << "- Socket client has been created..." << endl;
-
-
-		server_addr.sin_family = AF_INET;
-		server_addr.sin_port = htons(portNum);
-
-		inet_pton(AF_INET, address.c_str(), &server_addr.sin_addr);
-
-		int opt1, opt2, opt3, opt4, yes = 1;
-
-		SetOptions(server_fd);
-		opt4 = setsockopt(client, SOL_SOCKET, SO_KEEPALIVE, &yes, sizeof(yes));
-		if(opt1 < 0 || opt2 < 0 || opt3 < 0 || opt4 < 0)
-
-		int success = connect(server_fd, (struct sockaddr *) &server_addr, sizeof(server_addr));
-
-		// set polling list
-		poll_list[0].fd = client;
-		poll_list[0].events = POLLOUT;
-
-		//-- Verify connection to server
-		if (success != 0) {
-			close(client);
-			cout << "- Error connecting to server." << endl;
-			status = false;
-		} else {
-			cout << "- Connected to server..." << endl;
-			status = true;
+		int bytes_sent = send(sockfd, buffer, ACK_LENGTH, 0);
+		if ( bytes_sent != ACK_LENGTH){
+			perror("send ack");
+			return -1;
 		}
+		
+		return 0;
 	}
 
-	void Client::SetTimeout(float seconds, float useconds)
+	int Client::RecvAck(int sockfd)
 	{
+        std::string ack_message = "ackattack";
 
-		if( timeout_set == false )
-		{
-			this->timeout.tv_sec = seconds;
-			this->timeout.tv_usec = useconds;
-			this->timeout_set = true;
-		}
+		// recv ack from server
+        char buffer[ACK_LENGTH];
+		memset(&buffer, 0, sizeof buffer);
+        if ( (recv(sockfd, buffer, ACK_LENGTH, 0) ) == -1 ) {
+        	perror("recv ack");
+        	return -1;
+        }
+	        
+        std::string msg(buffer, buffer + 9);
+        if (msg != "ackattack")
+        	return -1;
 
+        printf("Received ACK from server.\n");
+
+        return 0;
 	}
 
-	bool Client::SetOptions(int server_fd)
+	int Client::SetOptions(int sockfd)
 	{
+		// timeout value
+		struct timeval timeout;
+		timeout.tv_sec = 4;
+		timeout.tv_usec = 0;
 
-		int yes = 1;
-
-		if ( setsockopt(client, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout)) )
-		{
-			perror("setsockopt");
-			exit(-1);
+		// set socket options
+		int opt1, opt2, opt3, opt4, yes=1;
+		opt1 = setsockopt(server_fd, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(timeout));
+		opt2 = setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+		opt3 = setsockopt(server_fd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
+		opt4 = setsockopt(server_fd, SOL_SOCKET, SO_KEEPALIVE, &yes, sizeof(yes));
+		if(opt1 < 0 || opt2 < 0 || opt3 < 0 || opt4 < 0){
+			cout << "- Error setting socket options..." << endl;
+			return -1;
 		}
 
-		if ( setsockopt(client, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) )
-		{
-			perror("setsockopt");
-			exit(-1);
-		}
-
-		if ( setsockopt(client, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes)) )
-		{
-			perror("setsockopt");
-			exit(-1);
-		}
-
-
+		return 0;
 	}
-	*/
 
 	int Client::Poll()
 	{

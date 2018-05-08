@@ -12,13 +12,15 @@ using namespace cv;
 
 int main()
 {
-	std::string ip_address = "192.168.103.87";
+	std::string ip_address = "192.168.1.7";
 	std::string port = "5000";
 
 	proto::Client client(ip_address, port);
-	sleep(1);
+	//sleep(1);
 
 	std::string image_file = "/home/nuc4/Desktop/test.png";
+
+	sleep(2);
 
 	while(1)
 	{
@@ -37,7 +39,7 @@ int main()
 		// serialize and send
 		std::string message = payload_data.GetSerializedData();
 		std::cout << "message size = " << message.size() << std::endl;
-		int bytes_sent = client.Send( "ok" );
+		int bytes_sent = client.Send( "123666666666666666666666666666666666666666666666666666" );
 
 
 		//cv::imshow("unpacked", received_image_mat);
