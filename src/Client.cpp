@@ -85,20 +85,8 @@ namespace proto
 
 		std::cout << bytes_sent << " bytes sent." << endl;
 
-		if (bytes_sent == buffer_size)
-		{
-			std::cout << "in loop " << std::endl;
-
-	        char buffer[ACK_LENGTH];
-			memset(&buffer, 0, sizeof buffer);
-			int bytes = recv(server_fd, buffer, ACK_LENGTH, 0);
-			std::cout << "bytes = " << bytes << std::endl;
-				//perror("recv ack");
-	        std::string msg(buffer, buffer + 9);
-	        std::cout << "buffer = " << buffer << std::endl;
-	        if (msg != "ackattack")
-	        	return -1;
-			std::cout << "msg: " << msg << std::endl;
+		if (bytes_sent == buffer_size) {
+			RecvAck(server_fd);
 			return bytes_sent;
 		}
 		else

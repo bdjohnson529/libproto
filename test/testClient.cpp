@@ -1,4 +1,5 @@
 #include "Client.hpp"
+#include "Message.hpp"
 #include "PayloadData.hpp"
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -37,9 +38,10 @@ int main()
 		payload_data.LoadImage(image.data, 1, image.cols, image.rows);	// CV_TYPE set to zero
 
 		// serialize and send
-		std::string message = payload_data.GetSerializedData();
-		std::cout << "message size = " << message.size() << std::endl;
-		int bytes_sent = client.Send( "123666666666666666666666666666666666666666666666666666" );
+		std::string payload_message = payload_data.GetSerializedData();
+		std::cout << "message size = " << payload_message.size() << std::endl;
+		Message msg(IMAGE, payload_message, true);
+		int bytes_sent = client.Send( msg.Get() );
 
 
 		//cv::imshow("unpacked", received_image_mat);
