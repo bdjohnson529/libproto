@@ -22,7 +22,7 @@ namespace proto
 {
     class Server
     {
-        int sockfd, client_fd;  // listen on sock_fd, new connection on client_fd
+        int server_fd, client_fd;  // listen on sock_fd, new connection on client_fd
         int server, client; // socket file descriptors
         int message_length = 500000;	// message length in bytes
         struct pollfd poll_list[3];
@@ -39,6 +39,7 @@ namespace proto
         bool getServerStatus();
 
     private:
+        int SetOptions(int sockfd);
         bool STATUS = false;
     };
 }

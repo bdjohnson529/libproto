@@ -4,100 +4,47 @@ using namespace std;
 
 namespace proto
 {
-
-    // modified from http://beej.us/guide/bgnet/examples/server.c
     // server seems to time out after a while
     // occasionally cannot restart server
     Server::Server(int portNum)
     {
-        struct addrinfo *p;
-        socklen_t sin_size;
-        struct sigaction sa;
-        int rv;
+        // populate struct for socket bind
+        struct sockaddr_in server_addr;
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+        server_addr.sin_port = htons(portNum);
 
-        // use hints struct to return servinfo
-        struct addrinfo hints, *servinfo;
-        memset(&hints, 0, sizeof hints);
-        hints.ai_family = AF_UNSPEC;
-        hints.ai_socktype = SOCK_STREAM;
-        hints.ai_flags = AI_PASSIVE; // use my IP
-
-        if ((rv = getaddrinfo(NULL, "5000", &hints, &servinfo)) != 0) {
-            fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        }
-
-        // loop through all the results and bind to the first we can
-        for(p = servinfo; p != NULL; p = p->ai_next) {
-            if ((sockfd = socket(p->ai_family, p->ai_socktype,
-                    p->ai_protocol)) == -1) {
-                perror("server: socket");
-                continue;
-            }
-
-            /*
-            if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,
-                    sizeof(int)) == -1) {
-                perror("setsockopt");
-                exit(1);
-            }
-            */
-
-            if (bind(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
-                close(sockfd);
-                perror("server: bind");
-                continue;
-            }
-
-            break;
-        }
-
-        // Set socket options
-        struct timeval timeout;
-        timeout.tv_sec = 10;
-        timeout.tv_usec = 0;
-        int opt1, opt2, opt3, yes=1;
-        opt1 = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
-        opt2 = setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
-        opt3 = setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
-        if (opt1 != 0 || opt2 != 0 || opt3 != 0) {
-            std::cout << "--------- Error setting socket options : " << strerror(errno) << std::endl;
-            close(server);
+        if ( (server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ) {
+            perror("server: socket");
             return;
         }
 
-        freeaddrinfo(servinfo); // all done with this structure
+        if ( SetOptions(server_fd) == -1 )
+            return;
 
-        if (p == NULL)  {
-            fprintf(stderr, "server: failed to bind\n");
-            close(server);
+        if ( (bind(server_fd, (struct sockaddr *) &server_addr, sizeof(server_addr))) == -1) {
+            perror("server: bind");
             return;
         }
+
 
         int BACKLOG = 20;
-        if (listen(sockfd, BACKLOG) == -1) {
+        if (listen(server_fd, BACKLOG) == -1) {
             perror("listen");
-            close(server);
+            close(server_fd);
             return;
         }
-
-        /*
-        sa.sa_handler = sigchld_handler; // reap all dead processes
-        sigemptyset(&sa.sa_mask);
-        sa.sa_flags = SA_RESTART;
-        if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-            perror("sigaction");
-            exit(1);
-        }
-        */
 
         printf("server: waiting for connections...\n");
 
+        // accept connection from client
+        socklen_t sin_size;
         struct sockaddr their_addr;
         sin_size = sizeof their_addr;
-        client_fd = accept(sockfd, &their_addr, &sin_size);
+        client_fd = accept(server_fd, &their_addr, &sin_size);
         if (client_fd == -1) {
             perror("accept");
-            close(server);
+            close(server_fd);
             return;
         }
 
@@ -115,21 +62,6 @@ namespace proto
 
         STATUS = true;
 
-
-        /*
-        // send ack message from new process
-        if (!fork()) { // this is the child process
-            close(sockfd); // child doesn't need the listener
-            if (send(client_fd, buffer, ACK_LENGTH, 0) == -1)
-                perror("send");
-            close(client_fd);
-            exit(0);
-        }
-
-            close(client_fd);  // parent doesn't need this
-            */
-
-        
     }
 
 
@@ -149,6 +81,25 @@ namespace proto
 
         return 0;
 
+    }
+
+    int Server::SetOptions(int sockfd)
+    {
+        // Set socket options
+        struct timeval timeout;
+        timeout.tv_sec = 10;
+        timeout.tv_usec = 0;
+        int opt1, opt2, opt3, yes=1;
+        opt1 = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+        opt2 = setsockopt(sockfd, SOL_SOCKET, SO_REUSEPORT, &yes, sizeof(yes));
+        opt3 = setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout));
+        if (opt1 != 0 || opt2 != 0 || opt3 != 0) {
+            std::cout << "--------- Error setting socket options : " << strerror(errno) << std::endl;
+            close(sockfd);
+            return -1;
+        }
+
+        return 0;
     }
 
     int Server::RecvAck(int sockfd)
