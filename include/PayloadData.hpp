@@ -27,12 +27,14 @@ namespace proto
 
 	class PayloadData
 	{
-		float attitude[3];
-		float lla[3];
+
 		std::string image;
 		ImageData image_data;
 
 	public:
+        float attitude[3];
+        float lla[3];
+
 		enum ImageType
 		{
 			MONO8,
