@@ -35,8 +35,8 @@ add_library(proto STATIC ${SOURCES} ${HEADERS})
 
 # Build tests
 add_executable(testServer ${PROJECT_SOURCE_DIR}/test/testServer.cpp)
-target_link_libraries(testServer proto ${OpenCV_LIBS} boost_serialization)
+target_link_libraries(testServer proto ${OpenCV_LIBS} z boost_serialization)
 add_executable(testClient ${PROJECT_SOURCE_DIR}/test/testClient.cpp)
-target_link_libraries(testClient proto ${OpenCV_LIBS} boost_serialization)
+target_link_libraries(testClient proto ${OpenCV_LIBS} z boost_serialization)
 add_executable(testSerialization ${PROJECT_SOURCE_DIR}/test/testSerialization.cpp)
-target_link_libraries(testSerialization proto ${OpenCV_LIBS} boost_serialization)
+target_link_libraries(testSerialization proto ${OpenCV_LIBS} z boost_serialization)
