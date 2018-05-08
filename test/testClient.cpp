@@ -19,7 +19,7 @@ int main()
 	proto::Client client(ip_address, port);
 	//sleep(1);
 
-	std::string image_file = "/home/nuc4/Desktop/test.png";
+	std::string image_file = "/home/ben/Desktop/test.jpg";
 
 	sleep(2);
 
