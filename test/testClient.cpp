@@ -16,6 +16,7 @@ int main()
 	std::string port = "5000";
 
 	proto::Client client(ip_address, port);
+	sleep(1);
 
 	std::string image_file = "/home/nuc4/Desktop/test.png";
 
@@ -23,37 +24,27 @@ int main()
 	{
 		// load image from disk
 		cv::Mat image;
-		image = cv::imread(image_file);
-		cv::imshow("image", image);
-		cv::waitKey(2000);
-
-		// cast as char array
-		const char * image_char = reinterpret_cast<const char*>(image.data);
-		size_t image_size = strlen(image_char);
-		std::cout << "Image is " << image_size << " kb" << std::endl;
+		image = cv::imread(image_file, IMREAD_GRAYSCALE);
+		//cv::imshow("image", image);
+		//cv::waitKey(2000);
 
 		// load payload data
 		PayloadData payload_data;
 		payload_data.LoadLLA(118, 33, 0);		// fake LLA
 		payload_data.LoadAttitude(0, 0, 0);		// fake YPR
-		payload_data.LoadImage(image.data, image_size, 8, image.cols, image.rows, 0);	// CV_TYPE set to zero
-		payload_data.SerializeData();
+		payload_data.LoadImage(image.data, 1, image.cols, image.rows);	// CV_TYPE set to zero
 
-		std::string serialized_data = payload_data.GetSerializedData();
-		PayloadData received_payload_data = PayloadData(serialized_data);
-		std::string received_image = received_payload_data.GetImage();
-		ImageData received_image_data = received_payload_data.GetImageData();
-
-		// cast string into cv::Mat
-		unsigned char * buf = new unsigned char[received_image.size()];
-		memcpy(buf, received_image.data(), received_image.size() );
-		cv::Mat received_image_mat(received_image_data.height, received_image_data.width, CV_8UC1, buf);
-
-		cv::imshow("unpacked", received_image_mat);
-		cv::waitKey(1000);
+		// serialize and send
+		std::string message = payload_data.GetSerializedData();
+		std::cout << "message size = " << message.size() << std::endl;
+		int bytes_sent = client.Send( "ok" );
 
 
+		//cv::imshow("unpacked", received_image_mat);
+		//cv::waitKey(1000);
 
+
+		sleep(1);
 
 	}
 

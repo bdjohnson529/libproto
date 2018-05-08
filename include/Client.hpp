@@ -21,7 +21,7 @@ namespace proto
 {
 	class Client
 	{
-		int sockfd, client; // socket file descriptors
+		int server_fd, client; // socket file descriptors
 		int buffer_size = 500000;
 		struct pollfd poll_list[3];
 		struct msghdr msg;
@@ -34,6 +34,6 @@ namespace proto
 		int Poll();
 		int Close();
 
-		bool status;
+		bool STATUS;
 	};
 }

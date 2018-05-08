@@ -31,7 +31,6 @@ namespace proto
 		float lla[3];
 		std::string image;
 		ImageData image_data;
-		std::string serializedPayloadData;
 
 	public:
 		enum ImageType
@@ -48,9 +47,16 @@ namespace proto
 		void LoadImage(void * image, int channels, int width, int height);			// change struct to accept char array
 		void SerializeData();
 
-		std::string GetSerializedData(){return serializedPayloadData;}
 		std::string GetImage(){return image;}
 		ImageData GetImageData(){return image_data;}
+		std::string GetSerializedData()
+		{
+			this->SerializeData();
+			return serializedPayloadData;
+		}
+
+	private:
+		std::string serializedPayloadData;
 
 		friend class boost::serialization::access;
 		template<class Archive>
