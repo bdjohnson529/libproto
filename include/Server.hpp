@@ -36,8 +36,9 @@ namespace proto
         int Close();
         int SendAck(int sockfd);
         int RecvAck(int sockfd);
+        bool getServerStatus();
 
-
-        bool STATUS = true;
+    private:
+        bool STATUS = false;
     };
 }

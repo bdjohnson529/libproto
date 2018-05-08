@@ -245,4 +245,8 @@ namespace proto
         close(client);
     }
 
+    bool Server::getServerStatus()
+    {
+        return STATUS;
+    }
 }
