@@ -16,15 +16,17 @@
 
 #include "Define.h"
 
+#define ACK_LENGTH 100
+
 namespace proto
 {
     class Server
     {
+        int sockfd, client_fd;  // listen on sock_fd, new connection on client_fd
         int server, client; // socket file descriptors
         int message_length = 500000;	// message length in bytes
         struct pollfd poll_list[3];
         //struct msghdr msg;
-
 
     public:
         Server(int portNum);
@@ -32,5 +34,10 @@ namespace proto
         std::string RecvAll();
         int Poll();
         int Close();
+        int SendAck(int sockfd);
+        int RecvAck(int sockfd);
+
+
+        bool STATUS = true;
     };
 }
