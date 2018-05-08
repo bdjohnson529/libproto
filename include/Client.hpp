@@ -14,13 +14,14 @@
 
 #include <cstring>
 
-#define timeout_sec 4
+#define TIMEOUT_SEC 4
+#define ACK_LENGTH 100
 
 namespace proto
 {
 	class Client
 	{
-		int sockfd, client; // socket file descriptors
+		int server_fd, client; // socket file descriptors
 		int buffer_size = 500000;
 		struct pollfd poll_list[3];
 		struct msghdr msg;
@@ -30,9 +31,12 @@ namespace proto
 		Client(std::string address, std::string port);
 		int Send(std::string message);
 		int SendAll(const void *data, int data_size);
+		int RecvAck(int sockfd);
+		int SendAck(int sockfd);
+		int SetOptions(int sockfd);
 		int Poll();
 		int Close();
 
-		bool status;
+		bool STATUS;
 	};
 }

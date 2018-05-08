@@ -10,10 +10,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 set(CMAKE_BUILD_TYPE Debug)
 
 # OpenCV
-option(WITH_TESTS "Build with tests" OFF)
-if(WITH_TESTS)
 find_package(OpenCV 3.0.0 REQUIRED)
-endif(WITH_TESTS)
 
 # Boost
 find_package(Boost 1.54 COMPONENTS iostreams serialization)
@@ -38,6 +35,8 @@ add_library(proto STATIC ${SOURCES} ${HEADERS})
 
 # Build tests
 add_executable(testServer ${PROJECT_SOURCE_DIR}/test/testServer.cpp)
-target_link_libraries(testServer proto)
+target_link_libraries(testServer proto ${OpenCV_LIBS} boost_serialization)
 add_executable(testClient ${PROJECT_SOURCE_DIR}/test/testClient.cpp)
-target_link_libraries(testClient proto )
+target_link_libraries(testClient proto ${OpenCV_LIBS} boost_serialization)
+add_executable(testSerialization ${PROJECT_SOURCE_DIR}/test/testSerialization.cpp)
+target_link_libraries(testSerialization proto ${OpenCV_LIBS} boost_serialization)
