@@ -62,19 +62,22 @@ namespace proto
         if (opt1 != 0 || opt2 != 0 || opt3 != 0) {
             std::cout << "--------- Error setting socket options : " << strerror(errno) << std::endl;
             close(server);
+            return;
         }
 
         freeaddrinfo(servinfo); // all done with this structure
 
         if (p == NULL)  {
             fprintf(stderr, "server: failed to bind\n");
-            exit(1);
+            close(server);
+            return;
         }
 
         int BACKLOG = 20;
         if (listen(sockfd, BACKLOG) == -1) {
             perror("listen");
-            exit(1);
+            close(server);
+            return;
         }
 
         /*
@@ -94,6 +97,8 @@ namespace proto
         client_fd = accept(sockfd, &their_addr, &sin_size);
         if (client_fd == -1) {
             perror("accept");
+            close(server);
+            return;
         }
 
         // read ipv4 address of client
