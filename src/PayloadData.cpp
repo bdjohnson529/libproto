@@ -42,5 +42,10 @@ namespace proto
 		archive << *this;
 		this->serializedPayloadData = oss.str();
 	}
+
+	void PayloadData::setImageType(ImageType type)
+	{
+		this->_type = type;
+	}
 	
 };
