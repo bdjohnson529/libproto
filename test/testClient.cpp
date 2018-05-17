@@ -20,15 +20,15 @@ int main()
 	std::cout << "Successfully connected to client." << std::endl;
 	//sleep(1);
 
-	std::string image_file = "/home/ben/Desktop/test.jpg";
+	std::string image_file = "/home/ben/Desktop/testimg.png";
 
 	while(1)
 	{
 		// load image from disk
 		cv::Mat image;
 		image = cv::imread(image_file, IMREAD_GRAYSCALE);
-		//cv::imshow("image", image);
-		//cv::waitKey(2000);
+		cv::imshow("image", image);
+		cv::waitKey(1000);
 
 		// load payload data
 		PayloadData payload_data;
