@@ -16,6 +16,8 @@ int main()
 	std::string ip_address = "192.168.103.87";
 	std::string port = "5000";
 
+	// load image from disk
+	cv::Mat image;
 	proto::Client client(ip_address, port);
 	std::cout << "Successfully connected to client." << std::endl;
 	//sleep(1);
@@ -28,11 +30,11 @@ int main()
 		cv::Mat image;
 		image = cv::imread(image_file, IMREAD_GRAYSCALE);
 		cv::imshow("image", image);
-		cv::waitKey(1000);
+		cv::waitKey(500);
 
 		// load payload data
 		PayloadData payload_data;
-		payload_data.LoadLLA(118, 33, 0);		// fake LLA
+		payload_data.LoadLLA(34.8687255602, -118.0778732707, 0);		// fake LLA
 		payload_data.LoadAttitude(0, 0, 0);		// fake YPR
 		payload_data.LoadImage(image.data, 1, image.cols, image.rows);	// CV_TYPE set to zero
 
@@ -42,12 +44,9 @@ int main()
 		Message msg(IMAGE, payload_message, true);
 		int bytes_sent = client.Send( msg.Get() );
 
-
 		//cv::imshow("unpacked", received_image_mat);
 		//cv::waitKey(1000);
 
-
-		sleep(1);
 
 	}
 
