@@ -6,6 +6,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#define DEBUG false
+
 using namespace proto;
 
 int main()
@@ -22,8 +24,17 @@ int main()
 			continue;
 		}
 
+		if(DEBUG)
+			printf("--Message received.\n");
+
 		Message msg(payload_message, true);
+		if(DEBUG)
+			printf("--Message unpacked.\n");
+
 		PayloadData received_payload_data = PayloadData( msg.Body() );
+		if(DEBUG)
+			printf("--Payload struct unpacked.\n");
+
 		ImageData received_image_data = received_payload_data.GetImageData();
 		std::string received_image = received_payload_data.GetImage();
 
