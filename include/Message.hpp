@@ -6,6 +6,8 @@
 #include <boost/archive/text_iarchive.hpp>
 #include "Compress.hpp"
 
+#define DEBUG_MESSAGE true
+
 namespace proto
 {
 	enum MessageType

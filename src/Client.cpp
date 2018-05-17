@@ -18,13 +18,17 @@ namespace proto
 
 		// find server address info
 		int rv;
-		if ((rv = getaddrinfo(address.c_str(), port.c_str(), &hints, &servinfo)) != 0) {
+		if ((rv = getaddrinfo(address.c_str(), port.c_str(), &hints, &servinfo)) != 0)
 			fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-		}
+		else if(DEBUG_CLIENT)
+			printf("--Successfully got address info.\n");
 
 		// loop through all the results and connect to the first we can
 		struct addrinfo *p;
 		for(p = servinfo; p != NULL; p = p->ai_next) {
+			if(DEBUG_CLIENT)
+				printf("--Within client connecting loop.\n");
+
 			if ((server_fd = socket(p->ai_family, p->ai_socktype,
 					p->ai_protocol)) == -1) {
 				perror("client: socket");
@@ -42,7 +46,8 @@ namespace proto
 
 		if (p == NULL) {
 			fprintf(stderr, "client: failed to connect\n");
-		}
+		} else if(DEBUG_CLIENT)
+			printf("--Successfully connected to client.\n");
 
 		// read back server address
 		char s[INET_ADDRSTRLEN];
@@ -70,7 +75,7 @@ namespace proto
 		int bytes_sent;
 
 		char data[buffer_size];
-		memset(&data, 0, sizeof data);
+		//memset(&data, 0, sizeof data);
 		std::copy(message.begin(), message.end(), data);
 
 		// checksum to ensure full message receipt

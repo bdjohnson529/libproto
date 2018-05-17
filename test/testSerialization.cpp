@@ -15,7 +15,7 @@ int main()
 	std::string ip_address = "192.168.103.87";
 	std::string port = "5000";
 
-	std::string image_file = "/home/nuc4/Desktop/test.png";
+	std::string image_file = "/home/ben/Desktop/testimg.png";
 
 	// load image from disk
 	cv::Mat image;
@@ -32,7 +32,7 @@ int main()
 	PayloadData payload_data;
 	payload_data.LoadLLA(118, 33, 0);		// fake LLA
 	payload_data.LoadAttitude(0, 0, 0);		// fake YPR
-	payload_data.LoadImage(image.data, 1, image.cols, image.rows);	// CV_TYPE set to zero
+	payload_data.LoadImage(image.data, image.channels(), image.cols, image.rows);	// CV_TYPE set to zero
 	payload_data.SerializeData();
 
 	// unpack serialized data

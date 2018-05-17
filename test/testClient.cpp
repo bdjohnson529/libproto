@@ -13,15 +13,14 @@ using namespace cv;
 
 int main()
 {
-	std::string ip_address = "192.168.1.7";
+	std::string ip_address = "192.168.103.87";
 	std::string port = "5000";
 
 	proto::Client client(ip_address, port);
+	std::cout << "Successfully connected to client." << std::endl;
 	//sleep(1);
 
 	std::string image_file = "/home/ben/Desktop/test.jpg";
-
-	sleep(2);
 
 	while(1)
 	{

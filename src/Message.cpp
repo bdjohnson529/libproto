@@ -11,6 +11,8 @@ namespace proto
 		// compress if enabled
 		if(compressed)
 			this->body = Compress(this->body);
+			if(DEBUG_MESSAGE)
+				printf("--Compressing...\n");
 
 		std::ostringstream oss;
 		boost::archive::text_oarchive archive(oss);
@@ -28,6 +30,8 @@ namespace proto
 		// decompress if enabled
         if(compressed)
             this->body = Decompress(this->body);
+			if(DEBUG_MESSAGE)
+				printf("--Decompressing...\n");
 	}
 
 	void Message::operator=(Message &rhs)

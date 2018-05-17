@@ -16,6 +16,7 @@
 
 #define TIMEOUT_SEC 4
 #define ACK_LENGTH 100
+#define DEBUG_CLIENT false
 
 namespace proto
 {
