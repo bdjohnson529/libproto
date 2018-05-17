@@ -6,7 +6,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include "Compress.hpp"
 
-#define DEBUG_MESSAGE true
+#define DEBUG_MESSAGE false
 
 namespace proto
 {
