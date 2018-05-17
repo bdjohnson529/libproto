@@ -46,8 +46,7 @@ int main()
 		std::cout << "height = " << received_image_data.height << std::endl;
 
 		cv::imshow("received", received_image_mat);
-		cv::waitKey(3000);
-
+		cv::waitKey(500);
 	}
 
 	return 0;
