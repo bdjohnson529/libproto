@@ -14,6 +14,7 @@ namespace proto
 			if(DEBUG_MESSAGE)
 				printf("--Compressing...\n");
 
+		// serialize using boost string serialization
 		std::ostringstream oss;
 		boost::archive::text_oarchive archive(oss);
 		archive << *this;

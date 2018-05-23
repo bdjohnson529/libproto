@@ -27,6 +27,7 @@ namespace proto
 		MessageHeader header;
 		std::string msg;
 		std::string body;
+		char * data;
 
 		friend class boost::serialization::access;
 		template<class Archive>
