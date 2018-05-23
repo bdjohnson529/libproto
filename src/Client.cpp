@@ -74,16 +74,25 @@ namespace proto
 	{
 		int bytes_sent;
 
-		char data[buffer_size];
-		//memset(&data, 0, sizeof data);
-		std::copy(message.begin(), message.end(), data);
+		int message_length = static_cast<int>( message.length() ) + 20;
 
-		// checksum to ensure full message receipt
+		char data[message_length];
+		memset(&data, 0, sizeof data);
+
+		// header contains the message length
+		char buffer_length[10];
+		sprintf(buffer_length, "%09d", message_length);
+		std::copy( (char *) buffer_length, (char *) buffer_length + 9, (char *) data);
+
+		// message body
+		std::copy(message.begin(), message.end(), (char *) data + 9);
+
+		// footer is the checksum
 		char * data_ptr = (char *) data;
 		char checksum[] = "jackhammer";
-		strncpy( (data_ptr + (buffer_size - 10) ), checksum, 10);
+		strncpy( (data_ptr + (message_length - 10) ), checksum, 10);
 
-		bytes_sent = send(server_fd, data_ptr, buffer_size, MSG_NOSIGNAL);
+		bytes_sent = send(server_fd, data_ptr, message_length, MSG_NOSIGNAL);
 
 		if(bytes_sent == -1)
 			perror("send");

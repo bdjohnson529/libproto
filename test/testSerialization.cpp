@@ -32,7 +32,7 @@ int main()
 	PayloadData payload_data;
 	payload_data.LoadLLA(118, 33, 0);		// fake LLA
 	payload_data.LoadAttitude(0, 0, 0);		// fake YPR
-	payload_data.LoadImage(image.data, image.channels(), image.cols, image.rows);	// CV_TYPE set to zero
+	payload_data.LoadImage(image.data, image.channels(), image.cols, image.rows, 20);	// fake zoom
 	payload_data.SerializeData();
 
 	// unpack serialized data
@@ -42,6 +42,7 @@ int main()
 	ImageData received_image_data = received_payload_data.GetImageData();
 
 	std::cout << "recieved img size = " << received_image.size() << std::endl;
+	std::cout << "zoom = " << received_image_data.zoom << std::endl;
 
 	// cast string into cv::Mat
 	int n = received_image.size();
