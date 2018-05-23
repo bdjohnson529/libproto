@@ -24,7 +24,7 @@ namespace proto
     {
         int server_fd, client_fd;  // listen on sock_fd, new connection on client_fd
         int server, client; // socket file descriptors
-        int message_length = 500000;	// message length in bytes
+        int header_size = 10000;
         struct pollfd poll_list[3];
         //struct msghdr msg;
 

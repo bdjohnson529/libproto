@@ -126,19 +126,32 @@ namespace proto
 
     std::string Server::RecvAll()
     {
-
-        char message[message_length];
-        memset(&message, 0, sizeof message);
-        int data_size = message_length;
-
-        char * data_ptr = (char*) message;
         int bytes_recv, total_bytes = 0;
+
+        // receive header with message length
+        char header[header_size];
+        bytes_recv = recv(client_fd, (char *) header, header_size, 0);
+        std::string msg_header((char *) header, (char *) header + 9);
+        int msg_size = stoi(msg_header);
+
+        // create byte array to store the message
+        char message[msg_size];
+        memset(&message, 0, sizeof message);
+        std::copy( (char *) header + 9, (char *) header + header_size, (char *) message);
+
+        // track location in message
+        char * data_ptr = (char *) message;
+        data_ptr += bytes_recv - 9;
+
+        // bytes pending receipt
+        int data_size = msg_size;
+        data_size -= bytes_recv;
+
+        // total bytes received
+        total_bytes += bytes_recv;
 
         while (data_size > 0)
         {
-            //std::cout << "loop 1 " << std::endl;
-
-            //bytes_recv = 0;
             bytes_recv = recv(client_fd, data_ptr, data_size, 0);
 
             if (bytes_recv <= 0) {
@@ -149,16 +162,17 @@ namespace proto
             data_ptr += bytes_recv;
             data_size -= bytes_recv;
             total_bytes += bytes_recv;
+
         }
 
         //std::cout << "Total " << total_bytes << " bytes received." << std::endl;
 
         // Validate checksum
         data_ptr = (char*) message;
-        std::string checksum(data_ptr + (message_length - 10), data_ptr + message_length);
-        std::string buffer( data_ptr, data_ptr + total_bytes);
+        std::string checksum(data_ptr + (msg_size - 19), data_ptr + msg_size - 9);
+        std::string buffer( data_ptr, data_ptr + msg_size - 19);
 
-        if (total_bytes = message_length && checksum == "jackhammer") {
+        if (total_bytes = msg_size && checksum == "jackhammer"){
             std::cout << "Full message received" << std::endl;
             SendAck(client_fd);
             return buffer;
