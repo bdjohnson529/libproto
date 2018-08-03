@@ -11,7 +11,7 @@ namespace proto
         // populate struct for socket bind
         struct sockaddr_in server_addr;
         server_addr.sin_family = AF_INET;
-        server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+        server_addr.sin_addr.s_addr = INADDR_ANY;
         server_addr.sin_port = htons(portNum);
 
         if ( (server_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ) {
