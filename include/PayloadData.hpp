@@ -76,6 +76,7 @@ namespace proto
             ar & image_data.width;
             ar & image_data.height;
             ar & image_data.zoom;
+            ar & image_data.type;
 		}
 
 	};
