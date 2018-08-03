@@ -11,7 +11,11 @@ namespace proto
 	{
 		MONO8,
 		BGR24,
-		BGRA32,
+		RGBA32
+	};
+
+	enum CameraType
+	{
 		THERMAL,
 		VISIBLE
 	};
@@ -22,18 +26,20 @@ namespace proto
 		int width;
 		int height;
 		int zoom;
-		ImageType type;
+		ImageType imgType;
+		CameraType camType;
 		ImageData()		// emtpy constructor necessary for class initialization
 		{
 
 		}
-		ImageData(int channels, int width, int height, int zoom, ImageType type)
+		ImageData(int channels, int width, int height, int zoom, ImageType imgType, CameraType camType)
 		{
 			this->channels = channels;
 			this->width = width;
 			this->height = height;
 			this->zoom = zoom;
-            this->type = type;
+            this->imgType = imgType;
+            this->camType = camType;
 		}
 	};
 
@@ -51,7 +57,7 @@ namespace proto
 		PayloadData(std::string serializedPayloadData);
 		void LoadLLA(float lat, float lon, float alt);
 		void LoadAttitude(float yaw, float pitch, float roll);
-		void LoadImage(void * image, int channels, int width, int height, int zoom, ImageType type);			// change struct to accept char array
+		void LoadImage(void * image, int channels, int width, int height, int zoom, ImageType imgType, CameraType camType);			// change struct to accept char array
 		void SerializeData();
 		//void setImageType(ImageType type);
 
@@ -76,7 +82,8 @@ namespace proto
             ar & image_data.width;
             ar & image_data.height;
             ar & image_data.zoom;
-            ar & image_data.type;
+            ar & image_data.imgType;
+            ar & image_data.camType;
 		}
 
 	};

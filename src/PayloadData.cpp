@@ -28,11 +28,11 @@ namespace proto
 		this->attitude[2] = roll;
 	}
 
-	void PayloadData::LoadImage(void * image, int channels, int width, int height, int zoom, ImageType type)
+	void PayloadData::LoadImage(void * image, int channels, int width, int height, int zoom, ImageType imgType, CameraType camType)
 	{
 		int size = channels * width * height;
 		this->image = std::string( (const char*) image, size );
-		this->image_data = ImageData( channels, width, height, zoom, type );
+		this->image_data = ImageData( channels, width, height, zoom, imgType, camType );
 	}
 
 	void PayloadData::SerializeData()
