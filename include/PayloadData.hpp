@@ -22,16 +22,18 @@ namespace proto
 		int width;
 		int height;
 		int zoom;
+		ImageType type;
 		ImageData()		// emtpy constructor necessary for class initialization
 		{
 
 		}
-		ImageData(int channels, int width, int height, int zoom)
+		ImageData(int channels, int width, int height, int zoom, ImageType type)
 		{
 			this->channels = channels;
 			this->width = width;
 			this->height = height;
 			this->zoom = zoom;
+            this->type = type;
 		}
 	};
 
@@ -44,15 +46,14 @@ namespace proto
 	public:
         float attitude[3];
         float lla[3];
-		ImageType _type;
 		
 		PayloadData();
 		PayloadData(std::string serializedPayloadData);
 		void LoadLLA(float lat, float lon, float alt);
 		void LoadAttitude(float yaw, float pitch, float roll);
-		void LoadImage(void * image, int channels, int width, int height, int zoom);			// change struct to accept char array
+		void LoadImage(void * image, int channels, int width, int height, int zoom, ImageType type);			// change struct to accept char array
 		void SerializeData();
-		void setImageType(ImageType type);
+		//void setImageType(ImageType type);
 
 		std::string GetImage(){return image;}
 		ImageData GetImageData(){return image_data;}
@@ -75,7 +76,6 @@ namespace proto
             ar & image_data.width;
             ar & image_data.height;
             ar & image_data.zoom;
-            ar & _type;
 		}
 
 	};

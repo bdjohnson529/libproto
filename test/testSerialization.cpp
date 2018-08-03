@@ -32,7 +32,7 @@ int main()
 	PayloadData payload_data;
 	payload_data.LoadLLA(118, 33, 0);		// fake LLA
 	payload_data.LoadAttitude(0, 0, 0);		// fake YPR
-	payload_data.LoadImage(image.data, image.channels(), image.cols, image.rows, 20);	// fake zoom
+	payload_data.LoadImage(image.data, image.channels(), image.cols, image.rows, 20, ImageType::MONO8);	// fake zoom
 	payload_data.SerializeData();
 
 	// unpack serialized data

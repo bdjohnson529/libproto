@@ -36,7 +36,7 @@ int main()
 		PayloadData payload_data;
 		payload_data.LoadLLA(34.8687255602, -118.0778732707, 0);		// fake LLA
 		payload_data.LoadAttitude(0, 0, 0);		// fake YPR
-		payload_data.LoadImage(image.data, 1, image.cols, image.rows, 20);	// fake zoom
+		payload_data.LoadImage(image.data, 1, image.cols, image.rows, 20, ImageType::MONO8);	// fake zoom
 
 		// serialize and send
 		std::string payload_message = payload_data.GetSerializedData();
