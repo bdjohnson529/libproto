@@ -174,7 +174,6 @@ namespace proto
 
         if (total_bytes = msg_size && checksum == "jackhammer"){
             std::cout << "Full message received" << std::endl;
-            SendAck(client_fd);
             return buffer;
         }
         else {
