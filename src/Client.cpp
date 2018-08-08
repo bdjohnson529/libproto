@@ -98,13 +98,6 @@ namespace proto
 			perror("send");
 
 		std::cout << bytes_sent << " bytes sent." << endl;
-
-		if (bytes_sent == buffer_size) {
-			RecvAck(server_fd);
-			return bytes_sent;
-		}
-		else
-			return -1;
 	}
 
 	int Client::SendAck(int sockfd)
@@ -127,6 +120,8 @@ namespace proto
 
 	int Client::RecvAck(int sockfd)
 	{
+		std::cout << "waiting on ack receive" << std::endl;
+
         std::string ack_message = "ackattack";
 
 		// recv ack from server
@@ -143,6 +138,7 @@ namespace proto
 
         printf("Received ACK from server.\n");
 
+        std::cout << "completed ack receive" << std::endl;
         return 0;
 	}
 
