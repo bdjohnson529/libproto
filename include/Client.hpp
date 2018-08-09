@@ -27,6 +27,10 @@ namespace proto
 		struct pollfd poll_list[3];
 		struct msghdr msg;
 		int MAXDATASIZE = 500000;
+		int snd_timeout = 4;
+		int rv_timeout = 2;
+
+		bool status = false;
 
 	public:
 		Client(std::string address, std::string port);
@@ -34,10 +38,12 @@ namespace proto
 		int SendAll(const void *data, int data_size);
 		int RecvAck(int sockfd);
 		int SendAck(int sockfd);
+		int Select(int sockfd);
 		int SetOptions(int sockfd);
 		int Poll();
 		int Close();
 
-		bool STATUS;
+		int GetStatus(){return status;};
+
 	};
 }

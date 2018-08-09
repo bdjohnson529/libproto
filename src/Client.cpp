@@ -63,7 +63,7 @@ namespace proto
         if ( SendAck(server_fd) == -1)
         	return;
 
-		STATUS = true;
+		this->status = true;
 
 		//freeaddrinfo(servinfo); // all done with this structure
 
@@ -127,6 +127,10 @@ namespace proto
 		// recv ack from server
         char buffer[ACK_LENGTH];
 		memset(&buffer, 0, sizeof buffer);
+
+		if ( Select(sockfd) == 0 )
+			return -1;
+
         if ( (recv(sockfd, buffer, ACK_LENGTH, 0) ) == -1 ) {
         	perror("recv ack");
         	return -1;
@@ -142,11 +146,27 @@ namespace proto
         return 0;
 	}
 
+	int Client::Select(int sockfd)
+	{
+		fd_set set;
+		struct timeval timeout;
+		FD_ZERO(&set); /* clear the set */
+		FD_SET(sockfd, &set); /* add our file descriptor to the set */
+
+		// set the timeout
+		timeout.tv_sec = this->rv_timeout;
+		timeout.tv_usec = 0;
+
+		int rv = select(sockfd+1, &set, NULL, NULL, &timeout);
+
+		return rv;
+	}
+
 	int Client::SetOptions(int sockfd)
 	{
 		// timeout value
 		struct timeval timeout;
-		timeout.tv_sec = 4;
+		timeout.tv_sec = this->snd_timeout;
 		timeout.tv_usec = 0;
 
 		// set socket options
