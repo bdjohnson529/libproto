@@ -26,6 +26,7 @@ namespace proto
         int server, client; // socket file descriptors
         int header_size = 10000;
         struct pollfd poll_list[3];
+        float timeout = 3.0;
         //struct msghdr msg;
 
     public:

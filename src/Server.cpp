@@ -87,7 +87,7 @@ namespace proto
     {
         // Set socket options
         struct timeval timeout;
-        timeout.tv_sec = 10;
+        timeout.tv_sec = this->timeout;
         timeout.tv_usec = 0;
         int opt1, opt2, opt3, yes=1;
         opt1 = setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
@@ -126,6 +126,8 @@ namespace proto
 
     std::string Server::RecvAll()
     {
+        std::cout << "At top of recvall call" << std::endl;
+
         int bytes_recv, total_bytes = 0;
 
         // receive header with message length
@@ -174,7 +176,6 @@ namespace proto
 
         if (total_bytes = msg_size && checksum == "jackhammer"){
             std::cout << "Full message received" << std::endl;
-            SendAck(client_fd);
             return buffer;
         }
         else {
