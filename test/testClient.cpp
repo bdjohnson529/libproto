@@ -23,16 +23,13 @@ int main()
 	// set up TCP client
 	proto::Client client("127.0.0.1", "5000");
 	bool client_exists = client.GetStatus();
-	// loop if unsuccessful
-	while(!client_exists)
+	while(!client_exists) 	// loop if unsuccessful
 	{
 		client = proto::Client("127.0.0.1", "5000");
 		client_exists = client.GetStatus();
 	}
-	
 
 	std::cout << "Successfully connected to client." << std::endl;
-	//sleep(1);
 
 	std::string image_file = "/home/ben/Desktop/testimg.png";
 

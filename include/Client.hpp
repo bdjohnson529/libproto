@@ -23,10 +23,8 @@ namespace proto
 	class Client
 	{
 		int server_fd, client; // socket file descriptors
-		int buffer_size = 5000000;
 		struct pollfd poll_list[3];
 		struct msghdr msg;
-		int MAXDATASIZE = 500000;
 		int snd_timeout = 4;
 		int rv_timeout = 2;
 
