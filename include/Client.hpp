@@ -28,9 +28,9 @@ namespace proto
 		int snd_timeout = 4;
 		int rv_timeout = 2;
 
+	public:
 		bool status = false;
 
-	public:
 		Client(std::string address, std::string port);
 		int Send(std::string message);
 		int SendAll(const void *data, int data_size);
