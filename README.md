@@ -9,6 +9,9 @@ This library supports TCP/IP message streaming. We recommend benchmarking perfor
 
 ⋅Zlib
 
+⋅C++11 compiler
+
+
 ## Usage
 
 ### Serialization and Compression
