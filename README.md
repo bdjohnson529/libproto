@@ -1,6 +1,6 @@
 # Message Streaming Library
 
-This library supports TCP/IP message streaming. We recommend benchmarking performance against the expected message transfer speed based on your message size and bandwidth. Bandwidth between Linux machines can be tested using [iperf](https://iperf.fr/).
+This library supports TCP/IP message streaming between Linux machines. Messages can be transferred over any network: wireless, or wired. We recommend testing the bandwidth of your connection using [iperf](https://iperf.fr/).
 
 #### Dependencies
 * Boost
